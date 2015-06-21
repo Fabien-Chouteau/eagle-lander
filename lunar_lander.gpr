@@ -1,0 +1,21 @@
+with "C:\GtkAda\lib\gnat\gtkada";
+
+project Lunar_Lander is
+
+   type Head_Type is ("gtkada", "headless");
+   Head : Head_Type := external ("Head", "gtkada");
+
+   for Source_Dirs use ("src");
+   for Object_Dir use "obj";
+   for Exec_Dir use ".";
+   for Main use ("main_" & Head & ".adb");
+
+   type Gtkada_Kind_Type is ("static", "relocatable");
+   Library_Type : Gtkada_Kind_Type := external ("LIBRARY_TYPE", "static");
+
+   package Compiler is
+      for Default_Switches ("ada") use ("-gnat12");
+   end Compiler;
+
+end Lunar_Lander;
+

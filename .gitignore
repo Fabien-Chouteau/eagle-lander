@@ -1,0 +1,7 @@
+solenoid_engine
+*.db
+*.ali
+*.o
+*.xml
+*.cgpr
+*.bexch
