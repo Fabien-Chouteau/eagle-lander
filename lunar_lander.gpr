@@ -15,7 +15,7 @@ project Lunar_Lander is
    end Compiler;
 
    package Builder is
-      for Executable ("main_gtkada.adb") use "eagle_lander";
+      for Executable ("main.adb") use "eagle_lander";
    end Builder;
 
 end Lunar_Lander;
