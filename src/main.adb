@@ -30,7 +30,7 @@ with Gtk.Widget; use Gtk.Widget;
 with Lander;
 with Timeline; use Timeline;
 
-procedure Main_GtkAda is
+procedure Main is
 
    Glade_Filename : constant String := "station.glade";
    Builder : Gtkada_Builder;
@@ -55,4 +55,4 @@ begin
    Init_Gtk (Builder);
 
    Gtk.Main.Main;
-end Main_GtkAda;
+end Main;

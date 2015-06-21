@@ -5,3 +5,5 @@ solenoid_engine
 *.xml
 *.cgpr
 *.bexch
+eagle_lander*
+*.exe
