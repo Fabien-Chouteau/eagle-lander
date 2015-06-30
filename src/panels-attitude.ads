@@ -36,5 +36,5 @@ package Panels.Attitude is
    procedure Draw (Self       : in out Attitude_Indicator;
                    Cr         : Cairo_Context;
                    Pitch      : Angle;
-                   Pitch_Rate : Anglular_Velocity);
+                   Pitch_Rate : Angular_Velocity);
 end Panels.Attitude;

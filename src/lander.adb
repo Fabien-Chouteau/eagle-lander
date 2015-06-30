@@ -245,7 +245,7 @@ package body Lander is
       Lander_Situ.Pos := (X => 0.0 * m, Y => 50.0 * m);
       Lander_Situ.Vel := (X => Speed (0.0), Y => Speed (0.0));
       Lander_Situ.Pitch := 0.0 * rad;
-      Lander_Situ.Pitch_V := Anglular_Velocity (0.0);
+      Lander_Situ.Pitch_V := Angular_Velocity (0.0);
       Lander_Situ.DPS_Throttle := 0.0;
       Lander_Situ.Left_RCS_Throttle := 0.0;
       Lander_Situ.Right_RCS_Throttle := 0.0;

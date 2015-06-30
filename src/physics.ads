@@ -39,7 +39,7 @@ package Physics is
         Second => -2,
         others => 0);
 
-   subtype Anglular_Velocity is Mks_Type
+   subtype Angular_Velocity is Mks_Type
      with
       Dimension => (
         Symbol => "rad/s",

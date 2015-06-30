@@ -141,7 +141,7 @@ package body Panels.Attitude is
    procedure Draw (Self       : in out Attitude_Indicator;
                    Cr         : Cairo_Context;
                    Pitch      : Angle;
-                   Pitch_Rate : Anglular_Velocity) is
+                   Pitch_Rate : Angular_Velocity) is
       Size : constant Gdouble := Self.Inner_Frame_Size.X;
       center_x : constant Gdouble := Size / 2.0;
       center_y : constant Gdouble := Size / 2.0;
