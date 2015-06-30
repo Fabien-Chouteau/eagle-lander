@@ -69,8 +69,12 @@ package body Lander is
                          Pitch_F : in out Torque;
                          Situ    : in out Lander_Situation)
    is
-      L_Thrust : constant Force := RCS_Max_Thrust * Situ.Left_RCS_Throttle;
-      R_Thrust : constant Force := RCS_Max_Thrust * Situ.Right_RCS_Throttle;
+      --  RCS thrust is multiplied by two because there are two RCS on each
+      --  sides of the LM.
+      L_Thrust : constant Force :=
+        RCS_Max_Thrust * Situ.Left_RCS_Throttle * 2.0;
+      R_Thrust : constant Force :=
+        RCS_Max_Thrust * Situ.Right_RCS_Throttle * 2.0;
    begin
       if Situ.RCS_Propellent_Mass > Mass (0.0) then
          Situ.RCS_Propellent_Mass := Situ.RCS_Propellent_Mass
