@@ -30,7 +30,12 @@ with Physics; use Physics;
 
 package Lander is
 
-   Safe_Landing_Vel : constant Speed_Vect := (Speed (3.0), Speed (3.0));
+   --  For landing envolope, see:
+   --  An Analysis and a Historical Review
+   --  of the Apollo Program
+   --  Lunar Module Touchdown Dynamics
+   Safe_Landing_Vel : constant Speed_Vect := (Speed (1.2), Speed (2.1));
+
    Safe_Landing_Pitch : constant Angle := Ada.Numerics.Pi / 6.0;
 
    type Lander_Situation is record
