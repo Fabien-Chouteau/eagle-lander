@@ -403,6 +403,7 @@ package body Panels is
                  Screen_Size, Screen_Size);
       Fill (Cr);
 
+      Set_Line_Width (Cr, 1.0);
       declare
          Tick_Spacing : constant Gdouble := Screen_Size * 0.9 / 16.0;
          Tick1_Y : Gdouble := Margin_Small + Screen_Size * 0.05;

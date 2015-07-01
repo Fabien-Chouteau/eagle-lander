@@ -177,11 +177,12 @@ package body Panels.Altitude is
       Fill (Cr);
 
       --  RANGE / ALT
-      Set_Source_Rgb (Cr, 1.0, 1.0, 1.0);
+      Set_Source_Rgba (Cr, 1.0, 1.0, 1.0, 0.2);
       Draw_Centered_Text (Cr   => Cr,
                           Text => "RANGE",
                           Pos  => (Size.X / 4.0, Title_Height * 0.3),
                           Size => Text_Size);
+      Set_Source_Rgba (Cr, 1.0, 1.0, 1.0, 1.0);
       Draw_Centered_Text (Cr   => Cr,
                           Text => "ALT",
                           Pos  => (Size.X / 4.0, Title_Height * 0.6),
@@ -190,11 +191,12 @@ package body Panels.Altitude is
       --  RANGE RATE / ALT RATE
       Save (Cr);
       Translate (Cr, Size.X / 2.0, 0.0);
-      Set_Source_Rgb (Cr, 1.0, 1.0, 1.0);
+      Set_Source_Rgba (Cr, 1.0, 1.0, 1.0, 0.2);
       Draw_Centered_Text (Cr   => Cr,
                           Text => "RANGE RATE",
                           Pos  => (Size.X / 4.0, Title_Height * 0.3),
                           Size => Text_Size);
+      Set_Source_Rgba (Cr, 1.0, 1.0, 1.0, 1.0);
       Draw_Centered_Text (Cr   => Cr,
                           Text => "ALT RATE",
                           Pos  => (Size.X / 4.0, Title_Height * 0.6),
