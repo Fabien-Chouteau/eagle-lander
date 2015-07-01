@@ -73,6 +73,15 @@ package body Geom is
          return 0.0;
    end Angle_Of_Vect;
 
+   function Angle_Of_Vect (Vect : Vector2D) return Angle is
+   begin
+      return Angle (Arctan (Vect.Y, Vect.X));
+   exception
+      when others =>
+         Put_Line ("ArcTan Exception");
+         return Angle (0.0);
+   end Angle_Of_Vect;
+
    function "+" (A : Vector2D; B : Vector2D) return Vector2D is
    begin
       return (X => A.X + B.X, Y => A.Y + B.Y);

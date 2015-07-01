@@ -54,8 +54,8 @@ package Lander is
    end record;
 
    procedure Draw (Cr : Cairo_Context);
-   procedure Draw_Forecast (Cr : Cairo_Context; Step : Time;
-                            Iteration : Positive);
+   procedure Draw_Forecast_And_Speed_Vect (Cr : Cairo_Context; Step : Time;
+                                           Iteration : Positive);
    procedure Phys_Step (Elapsed : Time);
    procedure Reset;
 

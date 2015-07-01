@@ -36,6 +36,7 @@ package Geom is
    function Magnitude (Vect : Vector2D) return Gdouble;
    function Normalize (Vect : Vector2D) return Vector2D;
    function Angle_Of_Vect (Vect : Vector2D) return Gdouble;
+   function Angle_Of_Vect (Vect : Vector2D) return Angle;
    function Rotate (Vect : Vector2D; Angle_Rad : Angle) return Vector2D;
 
    function "+" (A : Vector2D; B : Vector2D) return Vector2D;

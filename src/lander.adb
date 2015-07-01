@@ -222,26 +222,48 @@ package body Lander is
       Draw_Lander (Cr, Lander_Situ);
    end Draw;
 
-   procedure Draw_Forecast (Cr : Cairo_Context; Step : Time;
-                            Iteration : Positive) is
+   procedure Draw_Forecast_And_Speed_Vect (Cr : Cairo_Context; Step : Time;
+                                           Iteration : Positive) is
 
       F_Situ : Lander_Situation := Lander_Situ;
+
+      --  Lander direction
+      L_Vect_1 : Position :=
+        F_Situ.Pos + Rotate ((0.0 * m, 20.0 * m), F_Situ.Pitch);
+      L_Vect_2 : Position :=
+        F_Situ.Pos + Rotate ((0.0 * m, -20.0 * m), F_Situ.Pitch);
+
+      -- Lander speed vector direction
+      V_Angle  : Angle :=
+        Angle_Of_Vect ((Gdouble (F_Situ.Vel.X), Gdouble (F_Situ.Vel.Y)));
+      V_Vect_1 : Position := F_Situ.Pos;
+      V_Vect_2 : Position := F_Situ.Pos + Rotate ((20.0 * m, 0.0 * m), V_Angle);
    begin
       Save (Cr);
+      Set_Line_Width (Cr, 0.2);
+      Set_Source_Rgba (Cr, 1.0, 0.0, 0.0, 0.5);
+      Move_To (Cr, Gdouble (L_Vect_1.X), Gdouble (L_Vect_1.Y));
+      Line_To (Cr, Gdouble (L_Vect_2.X), Gdouble (L_Vect_2.Y));
+      Stroke (Cr);
+
+      Set_Source_Rgba (Cr, 0.0, 1.0, 0.0, 0.5);
+      Move_To (Cr, Gdouble (V_Vect_1.X), Gdouble (V_Vect_1.Y));
+      Line_To (Cr, Gdouble (V_Vect_2.X), Gdouble (V_Vect_2.Y));
+      Stroke (Cr);
+
       Set_Source_Rgba (Cr, 0.0, 0.0, 1.0, 0.5);
       Set_Line_Cap (Cr, Cairo_Line_Cap_Round);
       Set_Line_Width (Cr, 2.0);
 
       for N in 1 .. Iteration loop
          Lander_Phys_Step (Step, F_Situ);
-         --  Draw_Lander (Cr, F_Situ);
          Move_To (Cr, Gdouble (F_Situ.Pos.X), Gdouble (F_Situ.Pos.Y));
          Line_To (Cr, Gdouble (F_Situ.Pos.X), Gdouble (F_Situ.Pos.Y));
          Stroke (Cr);
 
       end loop;
       Restore (Cr);
-   end Draw_Forecast;
+   end Draw_Forecast_And_Speed_Vect;
 
    procedure Reset is
    begin
