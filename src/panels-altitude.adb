@@ -46,12 +46,11 @@ package body Panels.Altitude is
       Alt  : System.Dim.Mks.Length;
       Rate : Speed)
    is
-      Size : Vector2D := Self.Inner_Frame_Size;
-      Pos  : constant Vector2D := Self.Inner_Frame_Pos;
-      Title_Height : constant Gdouble := Size.Y * 0.10;
-      Text_Size    : constant Gdouble := Size.X * 0.07;
-
-      Tape_Width   : constant Gdouble := Size.X * 0.435;
+      Size         : Vector2D;
+      Pos          : Vector2D;
+      Title_Height : Gdouble;
+      Text_Size    : Gdouble;
+      Tape_Width   : Gdouble;
 
       Rate_Step_Height : constant Gdouble := 8.0;
       Rate_Max : constant Gdouble := 300.0; --  m/s
@@ -161,6 +160,14 @@ package body Panels.Altitude is
       end Draw_Alt_Tape;
    begin
       Self.Draw_Frame (Cr);
+
+      --  Real inner Size is only known after Draw_Frame()
+      Size         := Self.Inner_Frame_Size;
+      Pos          := Self.Inner_Frame_Pos;
+      Title_Height := Size.Y * 0.10;
+      Text_Size    := Size.X * 0.07;
+      Tape_Width   := Size.X * 0.435;
+
       Save (Cr);
 
       Translate (Cr, Self.Inner_Frame_Pos.X, Self.Inner_Frame_Pos.Y);

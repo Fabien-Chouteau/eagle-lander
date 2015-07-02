@@ -74,7 +74,6 @@ package body Panels is
 
    procedure On_Motion (P : in out Panel; Evt : Vector2D) is
       Mvt : Vector2D;
---        Ratio : Gdouble;
       Ratio : Vector2D;
    begin
       if P.Clicked or else P.Resized then
@@ -84,7 +83,6 @@ package body Panels is
          else
             Ratio.X := Mvt.X / P.Size.X;
             Ratio.Y := Mvt.Y / P.Size.Y;
-            --              Ratio := ((Mvt.X ** 2 + Mvt.Y ** 2) ** (-2)) / 20.0;
             if Ratio.X > Ratio.Y then
                Ratio.Y := Ratio.X;
             else
@@ -202,8 +200,8 @@ package body Panels is
       Layout := Create_Layout (Cr);
       Desc := Pango.Font.From_String ("arial bold 9");
       --        Set_Weight (Desc, Pango_Weight_Bold);
-      Set_Size (Desc, Gint (Size) * 750);
-      Set_Gravity (Desc, Gravity);
+      Set_Size (Desc, Gint (Size + 1.0) * 750);
+      --Set_Gravity (Desc, Gravity);
       Set_Font_Description (Layout, Desc);
       return Layout;
    end LM_Font;
@@ -261,14 +259,23 @@ package body Panels is
                    Cr    : Cairo_Context;
                    Value : Gdouble)
    is
-      Size        : constant Vector2D := Self.Inner_Frame_Size;
-      Margin_Side : constant Gdouble := 0.06 * Size.X;
-      Margin_Up   : constant Gdouble := 0.15 * Size.Y;
-      Bar_Width   : constant Gdouble := 0.15 * Size.X;
-      Bar_Height  : constant Gdouble := Size.Y - Margin_Up - Margin_Side;
-      H : constant Gdouble := Margin_Up + (1.0 - Value) * Bar_Height * 0.9;
+      Size        : Vector2D;
+      Margin_Side : Gdouble;
+      Margin_Up   : Gdouble;
+      Bar_Width   : Gdouble;
+      Bar_Height  : Gdouble;
+      H : Gdouble;
    begin
       Self.Draw_Frame (Cr);
+
+      --  Real inner Size is only known after Draw_Frame()
+      Size        := Self.Inner_Frame_Size;
+      Margin_Side := 0.06 * Size.X;
+      Margin_Up   := 0.15 * Size.Y;
+      Bar_Width   := 0.15 * Size.X;
+      Bar_Height  := Size.Y - Margin_Up - Margin_Side;
+      H := Margin_Up + (1.0 - Value) * Bar_Height * 0.9;
+
       Save (Cr);
       Translate (Cr, Self.Inner_Frame_Pos.X, Self.Inner_Frame_Pos.Y);
       Scale (Cr, Self.Scale, Self.Scale);
@@ -361,29 +368,37 @@ package body Panels is
                    Value : Speed_Vect)
    is
 
-      Size         : constant Gdouble := Self.Inner_Frame_Size.X;
-      Margin_Large : constant Gdouble := Size * 0.2;
-      Margin_Small : constant Gdouble := Size * 0.1;
-      Screen_Size  : constant Gdouble := 0.70 * Size;
-      Tick_Spacing : constant Gdouble := Screen_Size * 0.9 / 16.0;
+      Size         : Gdouble;
+      Margin_Large : Gdouble;
+      Margin_Small : Gdouble;
+      Screen_Size  : Gdouble;
+      Tick_Spacing : Gdouble;
 
-      Target   : Vector2D  := (Gdouble (Value.X), Gdouble (Value.Y));
+      Scaled_Value   : Vector2D  := (Gdouble (Value.X), Gdouble (Value.Y));
       X_Factor : Integer := 1;
       Y_Factor : Integer := 1;
       Safe     : Vector2D;
    begin
       Self.Draw_Frame (Cr);
-      while abs Target.X > 20.0 loop
+
+      --  Real inner Size is only known after Draw_Frame()
+      Size         := Self.Inner_Frame_Size.X;
+      Margin_Large := Size * 0.2;
+      Margin_Small := Size * 0.1;
+      Screen_Size  := 0.70 * Size;
+      Tick_Spacing := Screen_Size * 0.9 / 16.0;
+
+      while abs Scaled_Value.X > 20.0 loop
          X_Factor := X_Factor * 10;
-         Target.X := Target.X / 10.0;
+         Scaled_Value.X := Scaled_Value.X / 10.0;
       end loop;
-      while abs Target.Y > 20.0 loop
+      while abs Scaled_Value.Y > 20.0 loop
          Y_Factor := Y_Factor * 10;
-         Target.Y := Target.Y / 10.0;
+         Scaled_Value.Y := Scaled_Value.Y / 10.0;
       end loop;
 
-      Target := Target * (Tick_Spacing / 2.5);
-      Target.Y := -Target.Y;
+      Scaled_Value := Scaled_Value * (Tick_Spacing / 2.5);
+      Scaled_Value.Y := -Scaled_Value.Y;
 
       Save (Cr);
       Translate (Cr, Self.Inner_Frame_Pos.X, Self.Inner_Frame_Pos.Y);
@@ -479,14 +494,14 @@ package body Panels is
       Rectangle (Cr, Margin_Large, Margin_Small, Screen_Size, Screen_Size);
       Clip (Cr);
 
-      Target := Target + Screen_Size / 2.0;
+      Scaled_Value := Scaled_Value + Screen_Size / 2.0;
       Set_Source_Rgb (Cr, 0.0, 0.0, 0.0);
-      Move_To (Cr, Margin_Large + Target.X, Margin_Small);
-      Line_To (Cr, Margin_Large + Target.X, Margin_Small + Screen_Size);
+      Move_To (Cr, Margin_Large + Scaled_Value.X, Margin_Small);
+      Line_To (Cr, Margin_Large + Scaled_Value.X, Margin_Small + Screen_Size);
       Stroke (Cr);
 
-      Move_To (Cr, Margin_Large, Margin_Small + Target.Y);
-      Line_To (Cr, Margin_Large + Screen_Size, Margin_Small + Target.Y);
+      Move_To (Cr, Margin_Large, Margin_Small + Scaled_Value.Y);
+      Line_To (Cr, Margin_Large + Screen_Size, Margin_Small + Scaled_Value.Y);
       Stroke (Cr);
 
 

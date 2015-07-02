@@ -33,15 +33,23 @@ package body Panels.Thrust_To_Weight is
                    Cr    : Cairo_Context;
                    Value : Gdouble)
    is
-      Size        : constant Vector2D := Self.Inner_Frame_Size;
-      Margin_Side : constant Gdouble := 0.26 * Size.X;
-      Margin_Up   : constant Gdouble := 0.15 * Size.Y;
-      Bar_Width   : constant Gdouble := 0.15 * Size.X;
-      Bar_Height  : constant Gdouble := Size.Y - Margin_Up - Margin_Side;
-      H : constant Gdouble := Margin_Up + (6.0 + Value) / 6.0 * Bar_Height * 0.9;
+      Size        : Vector2D;
+      Margin_Side : Gdouble;
+      Margin_Up   : Gdouble;
+      Bar_Width   : Gdouble;
+      Bar_Height  : Gdouble;
+      H : Gdouble;
    begin
-
       Self.Draw_Frame (Cr);
+
+      --  Real inner Size is only known after Draw_Frame()
+      Size         := Self.Inner_Frame_Size;
+      Margin_Side  := 0.26 * Size.X;
+      Margin_Up    := 0.15 * Size.Y;
+      Bar_Width    := 0.15 * Size.X;
+      Bar_Height   := Size.Y - Margin_Up - Margin_Side;
+      H := Margin_Up + (6.0 + Value) / 6.0 * Bar_Height * 0.9;
+
       Save (Cr);
       Translate (Cr, Self.Inner_Frame_Pos.X, Self.Inner_Frame_Pos.Y);
       Scale (Cr, Self.Scale, Self.Scale);

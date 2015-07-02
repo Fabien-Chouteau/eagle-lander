@@ -142,19 +142,31 @@ package body Panels.Attitude is
                    Cr         : Cairo_Context;
                    Pitch      : Angle;
                    Pitch_Rate : Angular_Velocity) is
-      Size : constant Gdouble := Self.Inner_Frame_Size.X;
-      center_x : constant Gdouble := Size / 2.0;
-      center_y : constant Gdouble := Size / 2.0;
-      radius : constant Gdouble := (Size / 2.0) * 0.6;
-      tick_size : constant Gdouble := radius * 0.1;
-      red_zone : constant Gdouble := Ada.Numerics.Pi / 12.0;
-      Rate_Gauge_Size : constant Gdouble := Size / 2.0;
-      Cur_Pos : Gdouble :=
-        5.0 * Gdouble (Pitch_Rate) * (Rate_Gauge_Size * 0.9) / 2.0;
+      Size            : Gdouble;
+      center_x        : Gdouble;
+      center_y        : Gdouble;
+      radius          : Gdouble;
+      tick_size       : Gdouble;
+      red_zone        : Gdouble;
+      Rate_Gauge_Size : Gdouble;
+      Cur_Pos         : Gdouble;
 
       A_Line : Vector2D;
    begin
       Self.Draw_Frame (Cr);
+
+      --  Real inner Size is only known after Draw_Frame()
+      Size            := Self.Inner_Frame_Size.X;
+      center_x        := Size / 2.0;
+      center_y        := Size / 2.0;
+      radius          := (Size / 2.0) * 0.6;
+      tick_size       := radius * 0.1;
+      red_zone        := Ada.Numerics.Pi / 12.0;
+      Rate_Gauge_Size := Size / 2.0;
+      Cur_Pos         :=
+        5.0 * Gdouble (Pitch_Rate) * (Rate_Gauge_Size * 0.9) / 2.0;
+
+
 
       --  Check cursor limits
       if Cur_Pos > 54.0 then
