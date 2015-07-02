@@ -74,12 +74,9 @@ package body Geom is
    end Angle_Of_Vect;
 
    function Angle_Of_Vect (Vect : Vector2D) return Angle is
+      Ret : constant Gdouble := Angle_Of_Vect (Vect);
    begin
-      return Angle (Arctan (Vect.Y, Vect.X));
-   exception
-      when others =>
-         Put_Line ("ArcTan Exception");
-         return Angle (0.0);
+      return Angle (Ret);
    end Angle_Of_Vect;
 
    function "+" (A : Vector2D; B : Vector2D) return Vector2D is
