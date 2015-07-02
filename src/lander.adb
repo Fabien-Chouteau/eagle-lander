@@ -234,22 +234,29 @@ package body Lander is
         F_Situ.Pos + Rotate ((0.0 * m, -20.0 * m), F_Situ.Pitch);
 
       -- Lander speed vector direction
-      V_Angle  : Angle :=
-        Angle_Of_Vect ((Gdouble (F_Situ.Vel.X), Gdouble (F_Situ.Vel.Y)));
-      V_Vect_1 : Position := F_Situ.Pos;
-      V_Vect_2 : Position := F_Situ.Pos + Rotate ((20.0 * m, 0.0 * m), V_Angle);
+      V_Angle  : Angle;
+      V_Vect_1, V_Vect_2 : Position;
    begin
       Save (Cr);
+
       Set_Line_Width (Cr, 0.2);
       Set_Source_Rgba (Cr, 1.0, 0.0, 0.0, 0.5);
       Move_To (Cr, Gdouble (L_Vect_1.X), Gdouble (L_Vect_1.Y));
       Line_To (Cr, Gdouble (L_Vect_2.X), Gdouble (L_Vect_2.Y));
       Stroke (Cr);
 
-      Set_Source_Rgba (Cr, 0.0, 1.0, 0.0, 0.5);
-      Move_To (Cr, Gdouble (V_Vect_1.X), Gdouble (V_Vect_1.Y));
-      Line_To (Cr, Gdouble (V_Vect_2.X), Gdouble (V_Vect_2.Y));
-      Stroke (Cr);
+      if F_Situ.Vel /= (Speed (0.0), Speed (0.0)) then
+         -- Lander speed vector direction
+         V_Angle :=
+           Angle_Of_Vect ((Gdouble (F_Situ.Vel.X), Gdouble (F_Situ.Vel.Y)));
+         V_Vect_1 := F_Situ.Pos;
+         V_Vect_2 := F_Situ.Pos + Rotate ((20.0 * m, 0.0 * m), V_Angle);
+
+         Set_Source_Rgba (Cr, 0.0, 1.0, 0.0, 0.5);
+         Move_To (Cr, Gdouble (V_Vect_1.X), Gdouble (V_Vect_1.Y));
+         Line_To (Cr, Gdouble (V_Vect_2.X), Gdouble (V_Vect_2.Y));
+         Stroke (Cr);
+      end if;
 
       Set_Source_Rgba (Cr, 0.0, 0.0, 1.0, 0.5);
       Set_Line_Cap (Cr, Cairo_Line_Cap_Round);
@@ -283,6 +290,10 @@ package body Lander is
       Lander_Situ.Vel := (X => Speed (-150.0), Y => Speed (-45.0));
       Lander_Situ.Pitch := -49.0 * (Ada.Numerics.Pi / 180.0);
       Lander_Situ.DPS_Propellent_Mass := DPS_Prop_Mass_Init / 5.0;
+
+      Lander_Situ.Pos := (X => 0.0 * m, Y => 50.0 * m);
+      Lander_Situ.Vel := (X => Speed (0.0), Y => Speed (0.0));
+      Lander_Situ.Pitch := -0.0 * (Ada.Numerics.Pi / 180.0);
    end Reset;
 
    function Get_Situation return Lander_Situation is
