@@ -61,6 +61,7 @@ with Pango.Layout; use Pango.Layout;
 with Pango.Font; use Pango.Font;
 with Pango.Cairo; use Pango.Cairo;
 with System; use System;
+with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
 package body GUI is
 
@@ -157,7 +158,7 @@ package body GUI is
       Logical_Rect : Pango_Rectangle;
    begin
       Layout := LM_Font (Cr, 50.0);
-      Set_Text (Layout, Situ.Message.all);
+      Set_Text (Layout, To_String (Situ.Message));
       Layout.Get_Pixel_Extents (Ink_Rect, Logical_Rect);
 
       Save (Cr);

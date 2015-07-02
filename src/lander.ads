@@ -22,7 +22,7 @@
 with Geom;
 with Cairo; use Cairo;
 with Glib; use Glib;
-with Ada.Strings.Unbounded;
+with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Numerics;
 
 with System.Dim.Mks; use System.Dim.Mks;
@@ -82,7 +82,7 @@ package Lander is
    type Ending_Situation is record
       Situ    : Lander_Situation;
       Result  : Result_Type := Not_Done_Yet;
-      Message : Ada.Strings.Unbounded.String_Access;
+      Message : Unbounded_String := Null_Unbounded_String;
       Points  : Natural;
    end record;
 

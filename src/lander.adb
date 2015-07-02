@@ -25,6 +25,7 @@ with Timeline;
 with LEM_Drawing;
 with Geom; use Geom;
 with System.Dim.Mks_IO;
+with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
 package body Lander is
 
@@ -404,47 +405,42 @@ package body Lander is
         Left_Top.Y <= 0.0  * m or else Right_Top.Y <= 0.0  * m
       then
 
-         Ending_Situ.Message := new String'("");
+         Set_Unbounded_String (Ending_Situ.Message, "");
 
          if abs Lander_Situ.Vel.X > Safe_Landing_Vel.X then
             Float_IO.Put (Str, Gdouble (Lander_Situ.Vel.X), 2, 0);
-            Ending_Situ.Message :=
-              new String'("Horizontal velocity too high: "
-                          & Str & " m/s" & ASCII.CR & ASCII.LF &
-                            Ending_Situ.Message.all);
+            Append (Ending_Situ.Message,
+                    "Horizontal velocity too high: "
+                    & Str & " m/s" & ASCII.CR & ASCII.LF);
             Ending_Situ.Result := Crash;
             Ending_Situ.Points := 0;
          end if;
          if abs Lander_Situ.Vel.Y > Safe_Landing_Vel.Y then
             Float_IO.Put (Str, Gdouble (Lander_Situ.Vel.Y), 2, 0);
-            Ending_Situ.Message :=
-              new String'("Descent rate too high: "
-                          & Str & " m/s" & ASCII.CR & ASCII.LF &
-                            Ending_Situ.Message.all);
+            Append (Ending_Situ.Message,
+                    "Descent rate too high: "
+                    & Str & " m/s" & ASCII.CR & ASCII.LF);
             Ending_Situ.Result := Crash;
             Ending_Situ.Points := 0;
          end if;
          if abs Lander_Situ.Pitch_V > Ada.Numerics.Pi / 6.0 * rad / s then
             Float_IO.Put (Str, Gdouble (Lander_Situ.Pitch_V), 2, 0);
-            Ending_Situ.Message :=
-              new String'("Pitch rate too high: "
-                          & Str & " rad/s" & ASCII.CR & ASCII.LF &
-                            Ending_Situ.Message.all);
+            Append (Ending_Situ.Message,
+                    "Pitch rate too high: "
+                    & Str & " rad/s" & ASCII.CR & ASCII.LF);
             Ending_Situ.Result := Crash;
             Ending_Situ.Points := 0;
          end if;
          if abs Lander_Situ.Pitch > Ada.Numerics.Pi / 12.0 * rad then
             Float_IO.Put (Str, Gdouble (Lander_Situ.Pitch), 2, 0);
-            Ending_Situ.Message :=
-              new String'("Pitch too high: "
-                          & Str & " rad" & ASCII.CR & ASCII.LF &
-                            Ending_Situ.Message.all);
+            Append (Ending_Situ.Message,
+                      "Pitch too high: " & Str & " rad" & ASCII.CR & ASCII.LF);
             Ending_Situ.Result := Crash;
             Ending_Situ.Points := 0;
          end if;
 
          if Ending_Situ.Result /= Crash then
-            Ending_Situ.Message := new String'("The Eagle has landed");
+            Set_Unbounded_String (Ending_Situ.Message, "The Eagle has landed");
             Ending_Situ.Result := Sucess;
          end if;
 
@@ -457,7 +453,7 @@ package body Lander is
         or else Lander_Situ.Pos.Y > 5_000.0 * m
         or else Lander_Situ.Pos.Y < -2_000.0 * m
       then
-         Ending_Situ.Message := new String'("Out of simulation bounds");
+         Set_Unbounded_String (Ending_Situ.Message, "Out of simulation bounds");
          Ending_Situ.Result := Out_Of_Bounds;
          Ending_Situ.Situ := Lander_Situ;
          Ending_Situ.Points := 0;
