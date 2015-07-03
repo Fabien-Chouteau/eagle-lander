@@ -61,7 +61,8 @@ package body Lander is
    is
    begin
       --  TODO: Compute real moment of inertia
-      return Moment_Of_Inertia (1.35581795 * 25_965.0);
+      --  Value from Apollo 14 : https://www.hq.nasa.gov/alsj/a14/a14mr-a.htm
+      return Moment_Of_Inertia (12_750.0);
    end Pitch_Moment_Of_Inertia;
 
 
