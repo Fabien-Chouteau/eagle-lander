@@ -288,14 +288,12 @@ package body Lander is
       Lander_Situ.RCS_Propellent_Mass := RCS_Prop_Mass_Init;
 
       --  High Gate Apollo 11
-      Lander_Situ.Pos := (X => 9600.0 * m, Y => 2950.0 * m);
-      Lander_Situ.Vel := (X => Speed (-150.0), Y => Speed (-45.0));
-      Lander_Situ.Pitch := -49.0 * (Ada.Numerics.Pi / 180.0);
+      --  Based on "Apollo lunar descent and ascent trajectories"
+      --  NASA TM X-58040, March 1970
+      Lander_Situ.Pos := (X => 8334.0 * m, Y => 2290.0 * m);
+      Lander_Situ.Vel := (X => Speed (-154.229), Y => Speed (-44.196));
+      Lander_Situ.Pitch := -45.0 * (Ada.Numerics.Pi / 180.0);
       Lander_Situ.DPS_Propellent_Mass := DPS_Prop_Mass_Init / 5.0;
-
-      Lander_Situ.Pos := (X => 0.0 * m, Y => 50.0 * m);
-      Lander_Situ.Vel := (X => Speed (0.0), Y => Speed (0.0));
-      Lander_Situ.Pitch := -0.0 * (Ada.Numerics.Pi / 180.0);
    end Reset;
 
    function Get_Situation return Lander_Situation is
