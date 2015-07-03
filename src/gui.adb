@@ -50,7 +50,7 @@ with Geom; use Geom;
 with Ada.Text_IO; use Ada.Text_IO;
 with Gtkada.MDI; use Gtkada.MDI;
 with Ada.Containers.Doubly_Linked_Lists;
-with Cairo.Png;
+with Cairo.Png; use Cairo.Png;
 with System.Dim.Mks; use System.Dim.Mks;
 with Physics; use Physics;
 with Glib; use Glib;
@@ -86,6 +86,8 @@ package body GUI is
    Alt       : aliased Panels.Altitude.Alt_Panel;
 
    Zoom : Gdouble := 10.0;
+
+   Insigna_Surface : Cairo_Surface := Null_Surface;
 
    package Gdouble_Functions is new
      Ada.Numerics.Generic_Elementary_Functions (Gdouble);
@@ -124,15 +126,47 @@ package body GUI is
       return True;
    end Window_Idle;
 
+   -----------------
+   -- Draw_Ending --
+   -----------------
+
    procedure Draw_Ending (Cr : Cairo_Context; Situ : Ending_Situation) is
       Pos : constant Vector2D :=
         (Gdouble (Darea.Get_Allocated_Width) / 2.0,
-         Gdouble (Darea.Get_Allocated_Height) / 4.0);
+         Gdouble (Darea.Get_Allocated_Height) / 5.0);
+      Insigna_Pos : constant Vector2D :=
+        (Gdouble (Darea.Get_Allocated_Width) / 2.0,
+         Gdouble (Darea.Get_Allocated_Height) - Pos.Y);
 
+      Insigna_Size : constant Vector2D := (700.0, 700.0);
       Layout : Pango_Layout;
       Ink_Rect    : Pango_Rectangle;
       Logical_Rect : Pango_Rectangle;
+      Scale : Gdouble;
    begin
+
+      --  Draw insigna
+      if Situ.Result = Sucess then
+         if Insigna_Surface = Null_Surface then
+            Insigna_Surface :=
+              Create_From_Png ("ressources/Apollo11.png");
+         end if;
+         Save (Cr);
+
+         --  Fit insigna to screen
+         Scale := Gdouble (Darea.Get_Allocated_Width) / Insigna_Size.X;
+
+         --  Take a third of that
+         Scale := Scale / 3.0;
+         Cairo.Translate (Cr => Cr,
+                          Tx => Insigna_Pos.X - Insigna_Size.X / 2.0 * Scale,
+                          Ty => Insigna_Pos.Y - Insigna_Size.Y / 2.0 * Scale);
+         Cairo.Scale (Cr, Scale, Scale);
+         Set_Source_Surface (Cr, Insigna_Surface, 0.0, 0.0);
+         Paint (Cr);
+         Restore (Cr);
+      end if;
+
       Layout := LM_Font (Cr, 50.0);
       Set_Text (Layout, To_String (Situ.Message));
       Layout.Get_Pixel_Extents (Ink_Rect, Logical_Rect);
@@ -140,28 +174,33 @@ package body GUI is
       Save (Cr);
 
       --  Background
+      Rectangle (Cr     => Cr,
+                 X      => Pos.X - Gdouble ((Logical_Rect.Width + 10) / 2),
+                 Y      => Pos.Y - Gdouble ((Logical_Rect.Height + 10) / 2),
+                 Width  => Gdouble (Logical_Rect.Width + 10),
+                 Height => Gdouble (Logical_Rect.Height + 10));
+
       if Situ.Result = Sucess then
          Set_Source_Rgb (Cr, 1.0, 1.0, 1.0);
       else
          Set_Source_Rgb (Cr, 1.0, 0.0, 0.0);
       end if;
-
-      Rectangle (Cr     => Cr,
-                 X      => Pos.X - Gdouble (Logical_Rect.Width / 2),
-                 Y      => Pos.Y - Gdouble (Logical_Rect.Height / 2),
-                 Width  => Gdouble (Logical_Rect.Width),
-                 Height => Gdouble (Logical_Rect.Height));
-      Fill (Cr);
-
-      --  Text
-      Move_To (Cr, Pos.X - Gdouble (Logical_Rect.Width / 2),
-               Pos.Y - Gdouble (Logical_Rect.Height / 2));
+      Fill_Preserve (Cr);
 
       if Situ.Result = Sucess then
          Set_Source_Rgb (Cr, 0.0, 0.0, 0.0);
       else
          Set_Source_Rgb (Cr, 1.0, 1.0, 1.0);
       end if;
+
+      --  Box
+      Set_Line_Width (Cr, 2.0);
+      Stroke (Cr);
+
+      --  Text
+      Move_To (Cr, Pos.X - Gdouble (Logical_Rect.Width / 2),
+               Pos.Y - Gdouble (Logical_Rect.Height / 2));
+
 
       Pango.Cairo.Show_Layout  (Cr, Layout);
       Restore (Cr);
@@ -218,35 +257,16 @@ package body GUI is
    end Redraw;
 
    --  Buttons handlers --
-   procedure Fwd_Handler (User_Data : access GObject_Record'Class);
-   procedure Left_Handler (User_Data : access GObject_Record'Class);
-   procedure Right_Handler (User_Data : access GObject_Record'Class);
    procedure Pause_Toggled (Object : access Gtkada_Builder_Record'Class);
    procedure Reset (Object : access Gtkada_Builder_Record'Class);
-   procedure Throttle_Change_Value
+   procedure DPS_Throttle_Change_Value
+     (Object : access Gtkada_Builder_Record'Class);
+   procedure RCS_Throttle_Change_Value
      (Object : access Gtkada_Builder_Record'Class);
    procedure Timeline_Change_Value
      (Object : access Gtkada_Builder_Record'Class);
 
    procedure Quit (Object : access Gtkada_Builder_Record'Class);
-
-   procedure Fwd_Handler (User_Data : access GObject_Record'Class) is
-      pragma Unreferenced (User_Data);
-   begin
-      Lander.Set_DPS_Throttle (1.0);
-   end Fwd_Handler;
-
-   procedure Left_Handler (User_Data : access GObject_Record'Class) is
-      pragma Unreferenced (User_Data);
-   begin
-      Lander.Set_Left_RCS_Throttle (0.5);
-   end Left_Handler;
-
-   procedure Right_Handler (User_Data : access GObject_Record'Class) is
-      pragma Unreferenced (User_Data);
-   begin
-      Lander.Set_Right_RCS_Throttle (0.5);
-   end Right_Handler;
 
    procedure Pause_Toggled (Object : access Gtkada_Builder_Record'Class) is
       pragma Unreferenced (Object);
@@ -278,21 +298,27 @@ package body GUI is
       Right_RCS_Adj.Set_Value (Gdouble (Situ.Right_RCS_Throttle) * 100.0);
    end Reset;
 
-   procedure Throttle_Change_Value
+   procedure DPS_Throttle_Change_Value
      (Object : access Gtkada_Builder_Record'Class)
    is
       pragma Unreferenced (Object);
-      Ctrl : Lander.Lander_Controls;
    begin
-      Ctrl.DPS_Throttle := DPS_Adj.Get_Value / 100.0;
-      Ctrl.Left_RCS_Throttle := Left_RCS_Adj.Get_Value / 100.0;
-      Ctrl.Right_RCS_Throttle := -Left_RCS_Adj.Get_Value / 100.0;
+      Set_DPS_Throttle (DPS_Adj.Get_Value / 100.0);
 
+      DPS_Adj.Set_Value (Gdouble (Get_Situation.DPS_Throttle) * 100.0);
+   end DPS_Throttle_Change_Value;
+
+   procedure RCS_Throttle_Change_Value
+     (Object : access Gtkada_Builder_Record'Class)
+   is
+      pragma Unreferenced (Object);
+   begin
       --  Only Left is user adjustable, Right is just the oposite
       Right_RCS_Adj.Set_Value (-Left_RCS_Adj.Get_Value);
 
-      Lander.Set_Controls (Ctrl);
-   end Throttle_Change_Value;
+      Set_Left_RCS_Throttle (Left_RCS_Adj.Get_Value / 100.0);
+      Set_Right_RCS_Throttle (-Left_RCS_Adj.Get_Value / 100.0);
+   end RCS_Throttle_Change_Value;
 
    procedure Timeline_Change_Value
      (Object : access Gtkada_Builder_Record'Class)
@@ -445,13 +471,12 @@ package body GUI is
       Help           := Gtk_Toggle_Button (Builder.Get_Object ("help_toggle"));
       Timeline_Scale := Gtk_Scale (Builder.Get_Object ("timeline_scale"));
 
-      Register_Handler (Builder, "fwd_handler",   Fwd_Handler'Access);
-      Register_Handler (Builder, "left_handler",  Left_Handler'Access);
-      Register_Handler (Builder, "right_handler", Right_Handler'Access);
       Register_Handler (Builder, "Main_Quit",     Quit'Access);
       Register_Handler (Builder, "pause_toggled", Pause_Toggled'Access);
-      Register_Handler (Builder, "throttle_change_value",
-                        Throttle_Change_Value'Access);
+      Register_Handler (Builder, "DPS_throttle_change_value",
+                        DPS_Throttle_Change_Value'Access);
+      Register_Handler (Builder, "RCS_throttle_change_value",
+                        RCS_Throttle_Change_Value'Access);
       Register_Handler (Builder, "timeline_change_value",
                         Timeline_Change_Value'Access);
       Register_Handler (Builder, "reset_handler",     Reset'Access);

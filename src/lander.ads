@@ -52,12 +52,6 @@ package Lander is
       DPS_Propellent_Mass  : Mass  := 8_874.2 * kg;
    end record;
 
-   type Lander_Controls is record
-      DPS_Throttle       : Gdouble := 0.0;
-      Left_RCS_Throttle  : Gdouble := 0.0;
-      Right_RCS_Throttle : Gdouble := 0.0;
-   end record;
-
    procedure Draw (Cr : Cairo_Context);
    procedure Draw_Forecast_And_Speed_Vect (Cr : Cairo_Context; Step : Time;
                                            Iteration : Positive);
@@ -76,7 +70,6 @@ package Lander is
    procedure Set_DPS_Throttle (Throttle : Gdouble);
    procedure Set_Left_RCS_Throttle (Throttle : Gdouble);
    procedure Set_Right_RCS_Throttle (Throttle : Gdouble);
-   procedure Set_Controls (Ctlr : Lander_Controls);
 
    type Result_Type is (Crash, Out_Of_Bounds, Sucess, Not_Done_Yet);
    type Ending_Situation is record

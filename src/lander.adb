@@ -310,12 +310,17 @@ package body Lander is
 
    procedure Set_DPS_Throttle (Throttle : Gdouble) is
    begin
+      --  DPS cannot be throttled between 0% and 10% as well as 60% and 100%
       if Throttle < 0.1 then
          Lander_Situ.DPS_Throttle := 0.0;
-      elsif Throttle > 0.9 then
-         Lander_Situ.DPS_Throttle := 1.0;
+      elsif Throttle > 0.6 and then Throttle < 1.0 then
+         if Lander_Situ.DPS_Throttle <= 0.6 then
+            Lander_Situ.DPS_Throttle := 1.0;
+         else
+            Lander_Situ.DPS_Throttle := 0.6;
+         end if;
       else
-         Lander_Situ.DPS_Throttle := Mks_Type (Throttle);
+         Lander_Situ.DPS_Throttle := Dimentionless (Throttle);
       end if;
    end Set_DPS_Throttle;
 
@@ -328,7 +333,7 @@ package body Lander is
       elsif Throttle < -0.9 then
          Lander_Situ.Left_RCS_Throttle := -1.0;
       else
-         Lander_Situ.Left_RCS_Throttle := Mks_Type (Throttle);
+         Lander_Situ.Left_RCS_Throttle := Dimentionless (Throttle);
       end if;
    end Set_Left_RCS_Throttle;
 
@@ -341,16 +346,9 @@ package body Lander is
       elsif Throttle <= -0.9 then
          Lander_Situ.Right_RCS_Throttle := -1.0;
       else
-         Lander_Situ.Right_RCS_Throttle := Mks_Type (Throttle);
+         Lander_Situ.Right_RCS_Throttle := Dimentionless (Throttle);
       end if;
    end Set_Right_RCS_Throttle;
-
-   procedure Set_Controls (Ctlr : Lander_Controls) is
-   begin
-      Set_DPS_Throttle (Ctlr.DPS_Throttle);
-      Set_Left_RCS_Throttle (Ctlr.Left_RCS_Throttle);
-      Set_Right_RCS_Throttle (Ctlr.Right_RCS_Throttle);
-   end Set_Controls;
 
    function Get_RCS_Propellent_Level return Gdouble is
    begin
