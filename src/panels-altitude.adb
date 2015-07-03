@@ -19,6 +19,8 @@
 --                                                                           --
 -------------------------------------------------------------------------------
 
+with Text_Utils; use Text_Utils;
+
 package body Panels.Altitude is
 
    ----------

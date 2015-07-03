@@ -24,6 +24,7 @@ with Cairo.Image_Surface; use Cairo.Image_Surface;
 with Lander; use Lander;
 with Ada.Text_IO; use Ada.Text_IO;
 with Pango.Enums; use Pango.Enums;
+with Text_Utils; use Text_Utils;
 
 package body Panels.Attitude is
 

@@ -62,6 +62,7 @@ with Pango.Font; use Pango.Font;
 with Pango.Cairo; use Pango.Cairo;
 with System; use System;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
+with Text_Utils; use Text_Utils;
 
 package body GUI is
 
@@ -127,31 +128,6 @@ package body GUI is
       Pos : constant Vector2D :=
         (Gdouble (Darea.Get_Allocated_Width) / 2.0,
          Gdouble (Darea.Get_Allocated_Height) / 4.0);
-
-      function Create_Layout (Context : Cairo_Context)
-                              return Pango_Layout is
-         function Internal (Context : Cairo_Context) return Address;
-         pragma Import (C, Internal, "pango_cairo_create_layout");
-         Stub : Pango_Layout_Record;
-      begin
-         --        return Pango_Layout (Get_User_Data (Internal (Context), Stub));
-         return Pango_Layout
-           (Glib.Object.Get_User_Data (Internal (Context), Stub));
-      end Create_Layout;
-
-      function LM_Font (Cr : Cairo_Context; Size : Gdouble;
-                        Gravity : Pango.Enums.Gravity :=
-                          Pango.Enums.Pango_Gravity_South) return Pango_Layout is
-         Layout : Pango_Layout;
-         Desc   : Pango_Font_Description;
-      begin
-         Layout := Create_Layout (Cr);
-         Desc := Pango.Font.From_String ("Verdana bold 9");
-         Set_Size (Desc, Gint (Size) * 750);
-         Set_Gravity (Desc, Gravity);
-         Set_Font_Description (Layout, Desc);
-         return Layout;
-      end LM_Font;
 
       Layout : Pango_Layout;
       Ink_Rect    : Pango_Rectangle;

@@ -55,19 +55,6 @@ package Panels is
    procedure Draw_Frame (Self : in out Panel; Cr : Cairo_Context);
 
    procedure Set_Background_Color (Cr : Cairo_Context);
-   function LM_Font (Cr : Cairo_Context; Size : Gdouble;
-                     Gravity : Pango.Enums.Gravity :=
-                       Pango.Enums.Pango_Gravity_South) return Pango_Layout;
-   procedure Draw_Centered_Text (Cr : Cairo_Context;
-                                 Text : String;
-                                 Pos : Vector2D;
-                                 Size : Gdouble;
-                                 Gravity : Pango.Enums.Gravity :=
-                                   Pango.Enums.Pango_Gravity_South);
-   procedure Draw_Right_Text (Cr : Cairo_Context;
-                              Text : String;
-                              Pos : Vector2D;
-                              Size : Gdouble);
 
    type Gauge is new Panel with record
       Text : String_Access := new String'("N/A");

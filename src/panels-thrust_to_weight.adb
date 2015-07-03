@@ -19,6 +19,8 @@
 --                                                                           --
 -------------------------------------------------------------------------------
 
+with Text_Utils; use Text_Utils;
+
 package body Panels.Thrust_To_Weight is
 
    procedure Init (Self : in out TW_Panel;
