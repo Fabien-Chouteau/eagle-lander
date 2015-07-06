@@ -127,8 +127,8 @@ package body Lander is
       Situ.Vel := Situ.Vel + (FSum / Total_Mass (Situ)) * Elapsed;
       Situ.Pos := Situ.Pos + Situ.Vel * Time (Elapsed);
 
-      Situ.Pitch_V := Situ.Pitch_V + (Pitch_T / Pitch_Moment_Of_Inertia (Situ)) * Elapsed;
-      Situ.Pitch   := Angle_Normalize (Situ.Pitch + Situ.Pitch_V * Elapsed);
+      Situ.Pitch_R := Situ.Pitch_R + (Pitch_T / Pitch_Moment_Of_Inertia (Situ)) * Elapsed;
+      Situ.Pitch   := Angle_Normalize (Situ.Pitch + Situ.Pitch_R * Elapsed);
    end Lander_Phys_Step;
 
    procedure Phys_Step (Elapsed : Time) is
@@ -280,7 +280,7 @@ package body Lander is
       Lander_Situ.Pos := (X => 0.0 * m, Y => 50.0 * m);
       Lander_Situ.Vel := (X => Speed (0.0), Y => Speed (0.0));
       Lander_Situ.Pitch := 0.0 * rad;
-      Lander_Situ.Pitch_V := Angular_Velocity (0.0);
+      Lander_Situ.Pitch_R := Angular_Velocity (0.0);
       Lander_Situ.DPS_Throttle := 0.0;
       Lander_Situ.Left_RCS_Throttle := 0.0;
       Lander_Situ.Right_RCS_Throttle := 0.0;
@@ -376,7 +376,7 @@ package body Lander is
       Put_Line ("Vel X =>" & Lander_Situ.Vel.X'Img &
                   ", Y =>" & Lander_Situ.Vel.Y'Img);
       Put_Line ("Pitch =>" & Lander_Situ.Pitch'Img);
-      Put_Line ("Pitch_Vel =>" & Lander_Situ.Pitch_V'Img);
+      Put_Line ("Pitch_Rate =>" & Lander_Situ.Pitch_R'Img);
       Put_Line ("DPS_Throttle =>" & Lander_Situ.DPS_Throttle'Img);
       Put_Line ("DPS_Propellent_Mass =>"
                 & Lander_Situ.DPS_Propellent_Mass'Img);
@@ -398,8 +398,8 @@ package body Lander is
       Str : String (1 .. 7);
    begin
 
-      if abs Lander_Situ.Pitch_V > 3.0 * rad / s then
-         Float_IO.Put (Str, Gdouble (Lander_Situ.Pitch_V), 2, 0);
+      if abs Lander_Situ.Pitch_R > 3.0 * rad / s then
+         Float_IO.Put (Str, Gdouble (Lander_Situ.Pitch_R), 2, 0);
          Set_Unbounded_String (Ending_Situ.Message,
            "Pitch rate too high: "
            & Str & " rad/s" & ASCII.CR & ASCII.LF);
@@ -430,8 +430,8 @@ package body Lander is
             Ending_Situ.Result := Crash;
             Ending_Situ.Points := 0;
          end if;
-         if abs Lander_Situ.Pitch_V > Ada.Numerics.Pi / 6.0 * rad / s then
-            Float_IO.Put (Str, Gdouble (Lander_Situ.Pitch_V), 2, 0);
+         if abs Lander_Situ.Pitch_R > Ada.Numerics.Pi / 6.0 * rad / s then
+            Float_IO.Put (Str, Gdouble (Lander_Situ.Pitch_R), 2, 0);
             Append (Ending_Situ.Message,
                     "Pitch rate too high: "
                     & Str & " rad/s" & ASCII.CR & ASCII.LF);

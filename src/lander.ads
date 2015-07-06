@@ -42,7 +42,7 @@ package Lander is
       Pos     : Position;
       Vel     : Speed_Vect;
       Pitch   : Angle := 0.0;
-      Pitch_V : Angular_Velocity := Angular_Velocity (0.0);
+      Pitch_R : Angular_Velocity := Angular_Velocity (0.0);
 
       DPS_Throttle       : Dimentionless := 0.0;
       Left_RCS_Throttle  : Dimentionless := 0.0;

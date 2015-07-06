@@ -249,7 +249,7 @@ package body GUI is
          Overview.Draw (Cr);
       end if;
       Attitude.Draw (Cr, Lander.Get_Situation.Pitch,
-                     Lander.Get_Situation.Pitch_V);
+                     Lander.Get_Situation.Pitch_R);
       Xpointer.Draw (Cr, Lander.Get_Situation.Vel);
       DPS_Gauge.Draw (Cr, Lander.Get_DPS_Propellent_Level);
       RCS_Gauge.Draw (Cr, Lander.Get_RCS_Propellent_Level);
