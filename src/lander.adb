@@ -397,6 +397,16 @@ package body Lander is
         + Rotate ((-5.0 * m, 3.0 * m), Lander_Situ.Pitch);
       Str : String (1 .. 7);
    begin
+
+      if abs Lander_Situ.Pitch_V > 3.0 * rad / s then
+         Float_IO.Put (Str, Gdouble (Lander_Situ.Pitch_V), 2, 0);
+         Set_Unbounded_String (Ending_Situ.Message,
+           "Pitch rate too high: "
+           & Str & " rad/s" & ASCII.CR & ASCII.LF);
+         Ending_Situ.Result := Crash;
+         Ending_Situ.Points := 0;
+      end if;
+
       --  Check if something is touching ground
       if Left_Skid.Y <= 0.0 * m or else Right_Skid.Y <= 0.0  * m or else
         Left_Top.Y <= 0.0  * m or else Right_Top.Y <= 0.0  * m
