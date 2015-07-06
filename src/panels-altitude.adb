@@ -49,7 +49,6 @@ package body Panels.Altitude is
       Rate : Speed)
    is
       Size         : Vector2D;
-      Pos          : Vector2D;
       Title_Height : Gdouble;
       Text_Size    : Gdouble;
       Tape_Width   : Gdouble;
@@ -62,13 +61,16 @@ package body Panels.Altitude is
       Alt_Max : constant Gdouble := 5000.0;
       Alt_Val : Gdouble := Gdouble (Alt);
 
+      procedure Draw_Rate_Tape;
+      procedure Draw_Alt_Tape;
+
       procedure Draw_Rate_Tape is
          Tick_Width : Gdouble;
-         Text_Size : Gdouble := Size.X * 0.08;
+         Text_Size : constant Gdouble := Size.X * 0.08;
       begin
 
          if Rate_Val < -Rate_Max then
-            Rate_Val := - Rate_Max;
+            Rate_Val := -Rate_Max;
          elsif Rate_Val > Rate_Max then
             Rate_Val := Rate_Max;
          end if;
@@ -98,7 +100,7 @@ package body Panels.Altitude is
                Set_Source_Rgb (Cr, 1.0, 1.0, 1.0);
                Draw_Right_Text (Cr, Step'Img,
                                 (X => Tape_Width * 0.85 - Tick_Width * 1.2,
-                                 Y => - Gdouble (Step) * Rate_Step_Height),
+                                 Y => -Gdouble (Step) * Rate_Step_Height),
                                 Text_Size);
             else
                Tick_Width :=  Size.X * 0.06;
@@ -125,11 +127,11 @@ package body Panels.Altitude is
 
       procedure Draw_Alt_Tape is
          Tick_Width : Gdouble;
-         Text_Size : Gdouble := Size.X * 0.08;
+         Text_Size : constant Gdouble := Size.X * 0.08;
       begin
 
          if Rate_Val < -Rate_Max then
-            Rate_Val := - Rate_Max;
+            Rate_Val := -Rate_Max;
          elsif Rate_Val > Rate_Max then
             Rate_Val := Rate_Max;
          end if;
@@ -142,7 +144,7 @@ package body Panels.Altitude is
                Set_Source_Rgb (Cr, 1.0, 1.0, 1.0);
                Draw_Right_Text (Cr, Integer'Image (Step * 5),
                                 (X => Tape_Width * 0.85 - Tick_Width * 1.2,
-                                 Y => - Gdouble (Step) * Alt_Step_Height),
+                                 Y => -Gdouble (Step) * Alt_Step_Height),
                                 Text_Size);
             else
                Tick_Width :=  Size.X * 0.06;
@@ -165,7 +167,6 @@ package body Panels.Altitude is
 
       --  Real inner Size is only known after Draw_Frame()
       Size         := Self.Inner_Frame_Size;
-      Pos          := Self.Inner_Frame_Pos;
       Title_Height := Size.Y * 0.10;
       Text_Size    := Size.X * 0.07;
       Tape_Width   := Size.X * 0.435;
@@ -211,7 +212,6 @@ package body Panels.Altitude is
                           Pos  => (Size.X / 4.0, Title_Height * 0.6),
                           Size => Text_Size);
       Restore (Cr);
-
 
       --  From here, everything we draw will be under the titles
       Translate (Cr, 0.0, Title_Height);

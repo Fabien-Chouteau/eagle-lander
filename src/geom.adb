@@ -42,7 +42,6 @@ package body Geom is
       return (X => V2.X - V1.X, Y => V2.Y - V2.Y);
    end To_Vector2D;
 
-
    function Magnitude (Vect : Vector2D) return Gdouble is
    begin
       return Sqrt (Vect.X**2 + Vect.Y**2);
@@ -60,8 +59,10 @@ package body Geom is
 
    function Rotate (Vect : Vector2D; Angle_Rad : Angle) return Vector2D is
    begin
-      return (X => Vect.X * Gdouble (Cos (Angle_Rad)) - Vect.Y * Gdouble (Sin (Angle_Rad)),
-              Y => Vect.X * Gdouble (Sin (Angle_Rad)) + Vect.Y * Gdouble (Cos (Angle_Rad)));
+      return (X => Vect.X * Gdouble (Cos (Angle_Rad)) -
+                Vect.Y * Gdouble (Sin (Angle_Rad)),
+              Y => Vect.X * Gdouble (Sin (Angle_Rad)) +
+                Vect.Y * Gdouble (Cos (Angle_Rad)));
    end Rotate;
 
    function Angle_Of_Vect (Vect : Vector2D) return Gdouble is
@@ -142,6 +143,5 @@ package body Geom is
    begin
       return Angle_Normalize (A - B);
    end Angle_Diff;
-
 
 end Geom;

@@ -24,12 +24,10 @@ with Ada.Numerics.Float_Random; use Ada.Numerics.Float_Random;
 with Timeline;
 with LEM_Drawing;
 with Geom; use Geom;
-with System.Dim.Mks_IO;
-with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
 package body Lander is
 
-   package Float_IO is new Ada.Text_IO.Float_IO(Gdouble);
+   package Float_IO is new Ada.Text_IO.Float_IO (Gdouble);
 
    G : Generator;
 
@@ -37,7 +35,7 @@ package body Lander is
    procedure Lander_Phys_Step (Elapsed : Time; Situ : in out Lander_Situation);
    function Total_Mass (Situ : Lander_Situation) return Mass;
    function Weight (Situ : Lander_Situation) return Force_Vect;
-   function Pitch_Moment_Of_Inertia (Siti : Lander_Situation)
+   function Pitch_Moment_Of_Inertia (Situ : Lander_Situation)
                                      return Moment_Of_Inertia;
    function DPS_Thrust (Elapsed : Time; Situ : in out Lander_Situation)
                         return Force_Vect;
@@ -56,15 +54,15 @@ package body Lander is
       return (X => Force (0.0), Y => -(Total_Mass (Situ) * Moon_Gravity));
    end Weight;
 
-   function Pitch_Moment_Of_Inertia (Siti : Lander_Situation)
+   function Pitch_Moment_Of_Inertia (Situ : Lander_Situation)
                                      return Moment_Of_Inertia
    is
+      pragma Unreferenced (Situ);
    begin
       --  TODO: Compute real moment of inertia
       --  Value from Apollo 14 : https://www.hq.nasa.gov/alsj/a14/a14mr-a.htm
       return Moment_Of_Inertia (12_750.0);
    end Pitch_Moment_Of_Inertia;
-
 
    procedure RCS_Thrust (Elapsed : Time;
                          Fsum    : in out Force_Vect;
@@ -88,7 +86,7 @@ package body Lander is
            Rotate ((X => 0.0 * N, Y => R_Thrust + L_Thrust), Situ.Pitch);
 
          if Situ.RCS_Propellent_Mass < Mass (0.0) then
-            Situ.RCS_Propellent_Mass := 0.0 * Kg;
+            Situ.RCS_Propellent_Mass := 0.0 * kg;
          end if;
       end if;
    end RCS_Thrust;
@@ -125,9 +123,11 @@ package body Lander is
       RCS_Thrust (Elapsed, FSum, Pitch_T, Situ);
 
       Situ.Vel := Situ.Vel + (FSum / Total_Mass (Situ)) * Elapsed;
-      Situ.Pos := Situ.Pos + Situ.Vel * Time (Elapsed);
+      Situ.Pos := Situ.Pos + Situ.Vel * Elapsed;
 
-      Situ.Pitch_R := Situ.Pitch_R + (Pitch_T / Pitch_Moment_Of_Inertia (Situ)) * Elapsed;
+      Situ.Pitch_R := Situ.Pitch_R +
+        (Pitch_T / Pitch_Moment_Of_Inertia (Situ)) * Elapsed;
+
       Situ.Pitch   := Angle_Normalize (Situ.Pitch + Situ.Pitch_R * Elapsed);
    end Lander_Phys_Step;
 
@@ -216,7 +216,6 @@ package body Lander is
       end if;
       Restore (Cr);
 
-
    end Draw_Lander;
 
    procedure Draw (Cr : Cairo_Context) is
@@ -230,12 +229,12 @@ package body Lander is
       F_Situ : Lander_Situation := Lander_Situ;
 
       --  Lander direction
-      L_Vect_1 : Position :=
+      L_Vect_1 : constant Position :=
         F_Situ.Pos + Rotate ((0.0 * m, 20.0 * m), F_Situ.Pitch);
-      L_Vect_2 : Position :=
+      L_Vect_2 : constant Position :=
         F_Situ.Pos + Rotate ((0.0 * m, -20.0 * m), F_Situ.Pitch);
 
-      -- Lander speed vector direction
+      --  Lander speed vector direction
       V_Angle  : Angle;
       V_Vect_1, V_Vect_2 : Position;
    begin
@@ -248,7 +247,7 @@ package body Lander is
       Stroke (Cr);
 
       if F_Situ.Vel /= (Speed (0.0), Speed (0.0)) then
-         -- Lander speed vector direction
+         --  Lander speed vector direction
          V_Angle :=
            Angle_Of_Vect ((Gdouble (F_Situ.Vel.X), Gdouble (F_Situ.Vel.Y)));
          V_Vect_1 := F_Situ.Pos;
@@ -391,7 +390,7 @@ package body Lander is
         + Rotate ((-5.5 * m, -3.5 * m), Lander_Situ.Pitch);
       Right_Skid : constant Position := Lander_Situ.Pos
         + Rotate ((5.5 * m, -3.5 * m), Lander_Situ.Pitch);
-      Right_top : constant Position := Lander_Situ.Pos
+      Right_Top : constant Position := Lander_Situ.Pos
         + Rotate ((3.0 * m, 3.0 * m), Lander_Situ.Pitch);
       Left_Top : constant Position := Lander_Situ.Pos
         + Rotate ((-5.0 * m, 3.0 * m), Lander_Situ.Pitch);
@@ -454,13 +453,13 @@ package body Lander is
          Ending_Situ.Situ := Lander_Situ;
       end if;
 
-
       if Lander_Situ.Pos.X > 10_000.0 * m
         or else Lander_Situ.Pos.X < -2_000.0 * m
         or else Lander_Situ.Pos.Y > 5_000.0 * m
         or else Lander_Situ.Pos.Y < -2_000.0 * m
       then
-         Set_Unbounded_String (Ending_Situ.Message, "Out of simulation bounds");
+         Set_Unbounded_String
+           (Ending_Situ.Message, "Out of simulation bounds");
          Ending_Situ.Result := Out_Of_Bounds;
          Ending_Situ.Situ := Lander_Situ;
          Ending_Situ.Points := 0;

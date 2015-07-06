@@ -23,13 +23,9 @@ with Cairo; use Cairo;
 with Glib; use Glib;
 with Geom; use Geom;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
-with Pango.Layout; use Pango.Layout;
-with Pango.Enums;
-with Lander; use Lander;
 with Physics; use Physics;
 
 package Panels is
-
 
    type Angle_Array is array (1 .. 4) of Gdouble;
    type Panel is abstract tagged record

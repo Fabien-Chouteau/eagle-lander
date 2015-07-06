@@ -21,7 +21,6 @@
 
 with System.Dim.Mks; use System.Dim.Mks;
 with Ada.Numerics.Generic_Elementary_Functions;
-with Interfaces.C.Pointers;
 
 package Physics is
 

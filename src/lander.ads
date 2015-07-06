@@ -19,7 +19,6 @@
 --                                                                           --
 -------------------------------------------------------------------------------
 
-with Geom;
 with Cairo; use Cairo;
 with Glib; use Glib;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
@@ -89,12 +88,14 @@ private
    Dry_Mass             : constant Mass := 7_706.4  * kg;
 
    DPS_Max_Thrust       : constant Force := 44_400.0 * N;
-   DPS_Specific_Impulse : constant Specific_Impulse := Specific_Impulse (311.0);
+   DPS_Specific_Impulse : constant Specific_Impulse
+     := Specific_Impulse (311.0);
    DPS_Prop_Mass_Init   : constant Mass := 8_874.2 * kg;
 
    RCS_Max_Thrust       : constant Force := 440.0 * N;
-   RCS_Specific_Impulse : constant Specific_Impulse := Specific_Impulse (290.0);
-   RCS_Prop_Mass_Init   : constant Mass := 633.0 * Kg;
+   RCS_Specific_Impulse : constant Specific_Impulse
+     := Specific_Impulse (290.0);
+   RCS_Prop_Mass_Init   : constant Mass := 633.0 * kg;
 
    RCS_Dist_From_COG : constant System.Dim.Mks.Length := 2.0 * m;
 

@@ -36,7 +36,6 @@ with Gdk.Types;
 with Gdk.Types.Keysyms;
 with Lander; use Lander;
 with Gtk.Adjustment; use Gtk.Adjustment;
-with Gtk.Combo_Box; use Gtk.Combo_Box;
 with Background;
 with Timeline; use Timeline;
 with Gtk.Toggle_Button; use Gtk.Toggle_Button;
@@ -45,10 +44,7 @@ with Panels; use Panels;
 with Panels.Attitude;
 with Panels.Thrust_To_Weight;
 with Panels.Altitude;
-with Interfaces.C.Strings; use Interfaces.C.Strings;
 with Geom; use Geom;
-with Ada.Text_IO; use Ada.Text_IO;
-with Gtkada.MDI; use Gtkada.MDI;
 with Ada.Containers.Doubly_Linked_Lists;
 with Cairo.Png; use Cairo.Png;
 with Cairo.Surface;
@@ -57,9 +53,7 @@ with Physics; use Physics;
 with Glib; use Glib;
 with Glib.Main; use Glib.Main;
 with Pango; use Pango;
-with Pango.Enums;
 with Pango.Layout; use Pango.Layout;
-with Pango.Font; use Pango.Font;
 with Pango.Cairo; use Pango.Cairo;
 with System; use System;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
@@ -108,7 +102,16 @@ package body GUI is
 
    function Redraw (Area  : access Gtk_Drawing_Area_Record'Class;
                     Cr    : Cairo_Context) return Boolean;
+
    procedure Draw_Ending (Cr : Cairo_Context; Situ : Ending_Situation);
+
+   function On_Button
+     (Self  : access Gtk_Widget_Record'Class;
+      Event : Gdk.Event.Gdk_Event_Button) return Boolean;
+
+   function On_Motion
+     (Self  : access Gtk_Widget_Record'Class;
+      Event : Gdk.Event.Gdk_Event_Motion) return Boolean;
 
    -----------------
    -- Window_Idle --
@@ -207,7 +210,6 @@ package body GUI is
       Move_To (Cr, Pos.X - Gdouble (Logical_Rect.Width / 2),
                Pos.Y - Gdouble (Logical_Rect.Height / 2));
 
-
       Pango.Cairo.Show_Layout  (Cr, Layout);
       Restore (Cr);
    end Draw_Ending;
@@ -292,6 +294,7 @@ package body GUI is
    end Quit;
 
    procedure Reset (Object : access Gtkada_Builder_Record'Class) is
+      pragma Unreferenced (Object);
       Situ  : constant Lander.Lander_Situation := Lander.Get_Situation;
    begin
       Lander.Reset;
@@ -388,9 +391,10 @@ package body GUI is
    function On_Button
      (Self  : access Gtk_Widget_Record'Class;
       Event : Gdk.Event.Gdk_Event_Button) return Boolean is
+      pragma Unreferenced (Self);
 
-      W : Gdouble := Gdouble (Darea.Get_Allocated_Width);
-      H : Gdouble := Gdouble (Darea.Get_Allocated_Height);
+      W : constant Gdouble := Gdouble (Darea.Get_Allocated_Width);
+      H : constant Gdouble := Gdouble (Darea.Get_Allocated_Height);
       X : Gdouble := Event.X;
       Y : Gdouble := Event.Y;
    begin
@@ -429,9 +433,10 @@ package body GUI is
    function On_Motion
      (Self  : access Gtk_Widget_Record'Class;
       Event : Gdk.Event.Gdk_Event_Motion) return Boolean is
+      pragma Unreferenced (Self);
 
-      W  : Gdouble := Gdouble (Darea.Get_Allocated_Width);
-      H  : Gdouble := Gdouble (Darea.Get_Allocated_Height);
+      W  : constant Gdouble := Gdouble (Darea.Get_Allocated_Width);
+      H  : constant Gdouble := Gdouble (Darea.Get_Allocated_Height);
       X : Gdouble := Event.X;
       Y : Gdouble := Event.Y;
    begin
@@ -453,8 +458,10 @@ package body GUI is
       pragma Unreferenced (Src_Id);
    begin
 
-      RCS_Gauge.Init ("RCS", (X => 10.0, Y => 10.0), (X => 120.0, Y => 240.0));
-      DPS_Gauge.Init ("DPS", (X => 130.0, Y => 10.0), (X => 120.0, Y => 240.0));
+      RCS_Gauge.Init
+        ("RCS", (X => 10.0, Y => 10.0), (X => 120.0, Y => 240.0));
+      DPS_Gauge.Init
+        ("DPS", (X => 130.0, Y => 10.0), (X => 120.0, Y => 240.0));
       Xpointer.Init ((X => 10.0, Y => 250.0), 240.0);
       Attitude.Init ((X => 10.0, Y => 490.0), 240.0);
       Overview.Init ((X => 250.0, Y => 10.0), (X => 480.0, Y => 240.0));
@@ -495,10 +502,10 @@ package body GUI is
 
       Main_W := Gtk.Window.Gtk_Window (Get_Object (Builder, "Station"));
 
-      Main_W.Add_Events(Button_Release_Mask);
-      Main_W.Add_Events(Button_Press_Mask);
-      Main_W.Add_Events(Pointer_Motion_Mask);
-      Main_W.Add_Events(Pointer_Motion_Hint_Mask);
+      Main_W.Add_Events (Button_Release_Mask);
+      Main_W.Add_Events (Button_Press_Mask);
+      Main_W.Add_Events (Pointer_Motion_Mask);
+      Main_W.Add_Events (Pointer_Motion_Hint_Mask);
       Main_W.On_Button_Press_Event (On_Button'Access, True);
       Main_W.On_Button_Release_Event (On_Button'Access, True);
       Main_W.On_Motion_Notify_Event (On_Motion'Access);
@@ -507,7 +514,6 @@ package body GUI is
         (Main_W, Signal_Key_Press_Event,
          Widget_Keypress_Handlers.Event_Marshaller.To_Marshaller
            (Key_Pressed_Handler'Access));
-
 
       Do_Connect (Builder);
 

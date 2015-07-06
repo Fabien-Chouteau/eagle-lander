@@ -56,8 +56,7 @@ package body Panels.Thrust_To_Weight is
       Translate (Cr, Self.Inner_Frame_Pos.X, Self.Inner_Frame_Pos.Y);
       Scale (Cr, Self.Scale, Self.Scale);
 
-
-      -- static Background
+      --  static Background
 
       --  Black Background
       Set_Source_Rgb (Cr, 0.0, 0.0, 0.0);

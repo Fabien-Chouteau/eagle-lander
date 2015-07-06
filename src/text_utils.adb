@@ -9,6 +9,9 @@ package body Text_Utils is
    Desc   : Pango_Font_Description := null;
 
    function Create_Layout (Context : Cairo_Context)
+                           return Pango_Layout;
+
+   function Create_Layout (Context : Cairo_Context)
                            return Pango_Layout is
       function Internal (Context : Cairo_Context) return Address;
       pragma Import (C, Internal, "pango_cairo_create_layout");
@@ -24,6 +27,7 @@ package body Text_Utils is
       Gravity : Pango.Enums.Gravity := Pango.Enums.Pango_Gravity_South)
       return Pango_Layout
    is
+      pragma Unreferenced (Gravity);
    begin
       if Layout = null then
          Layout := Create_Layout (Cr);
@@ -33,7 +37,7 @@ package body Text_Utils is
       end if;
 
       Set_Size (Desc, Gint (Size + 1.0) * 750);
-      --Set_Gravity (Desc, Gravity);
+      --  Set_Gravity (Desc, Gravity);
       Set_Font_Description (Layout, Desc);
       return Layout;
    end LM_Font;

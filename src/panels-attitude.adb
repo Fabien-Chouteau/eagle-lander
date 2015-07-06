@@ -20,9 +20,6 @@
 -------------------------------------------------------------------------------
 
 with Ada.Numerics;
-with Cairo.Image_Surface; use Cairo.Image_Surface;
-with Lander; use Lander;
-with Ada.Text_IO; use Ada.Text_IO;
 with Pango.Enums; use Pango.Enums;
 with Text_Utils; use Text_Utils;
 
@@ -144,30 +141,27 @@ package body Panels.Attitude is
                    Pitch      : Angle;
                    Pitch_Rate : Angular_Velocity) is
       Size            : Gdouble;
-      center_x        : Gdouble;
-      center_y        : Gdouble;
-      radius          : Gdouble;
-      tick_size       : Gdouble;
-      red_zone        : Gdouble;
+      Center_X        : Gdouble;
+      Center_Y        : Gdouble;
+      Radius          : Gdouble;
+      Tick_Size       : Gdouble;
+      Red_Zone        : Gdouble;
       Rate_Gauge_Size : Gdouble;
       Cur_Pos         : Gdouble;
-
-      A_Line : Vector2D;
+      A_Line          : Vector2D;
    begin
       Self.Draw_Frame (Cr);
 
       --  Real inner Size is only known after Draw_Frame()
       Size            := Self.Inner_Frame_Size.X;
-      center_x        := Size / 2.0;
-      center_y        := Size / 2.0;
-      radius          := (Size / 2.0) * 0.6;
-      tick_size       := radius * 0.1;
-      red_zone        := Ada.Numerics.Pi / 12.0;
+      Center_X        := Size / 2.0;
+      Center_Y        := Size / 2.0;
+      Radius          := (Size / 2.0) * 0.6;
+      Tick_Size       := Radius * 0.1;
+      Red_Zone        := Ada.Numerics.Pi / 12.0;
       Rate_Gauge_Size := Size / 2.0;
       Cur_Pos         :=
         5.0 * Gdouble (Pitch_Rate) * (Rate_Gauge_Size * 0.9) / 2.0;
-
-
 
       --  Check cursor limits
       if Cur_Pos > 54.0 then
@@ -180,14 +174,13 @@ package body Panels.Attitude is
       Translate (Cr, Self.Inner_Frame_Pos.X, Self.Inner_Frame_Pos.Y);
       Scale (Cr, Self.Scale, Self.Scale);
 
-
       --  Static background
 
       --  Black  background
       Save (Cr);
       Rectangle (Cr, 2.0, 2.0, Size - 4.0, Size - 4.0);
       Clip (Cr);
-      Translate (Cr, center_x, center_y);
+      Translate (Cr, Center_X, Center_Y);
       A_Line := Rotate ((0.0, 135.0), Ada.Numerics.Pi / 8.0);
 
       Move_To (Cr, A_Line.X, A_Line.Y);
@@ -202,15 +195,15 @@ package body Panels.Attitude is
 
       --  Red zone
       Save (Cr);
-      Translate (Cr, center_x, center_y);
+      Translate (Cr, Center_X, Center_Y);
       Set_Source_Rgb (Cr, 1.0, 0.0, 0.0);
       Line_To (Cr, 0.0, 0.0);
-      Arc (Cr, 0.0, 0.0, radius + tick_size * 0.4, -red_zone, red_zone);
+      Arc (Cr, 0.0, 0.0, Radius + Tick_Size * 0.4, -Red_Zone, Red_Zone);
       Close_Path (Cr);
       Fill (Cr);
       Line_To (Cr, 0.0, 0.0);
-      Arc (Cr, 0.0, 0.0, radius + tick_size * 0.4,
-           Ada.Numerics.Pi - red_zone, Ada.Numerics.Pi + red_zone);
+      Arc (Cr, 0.0, 0.0, Radius + Tick_Size * 0.4,
+           Ada.Numerics.Pi - Red_Zone, Ada.Numerics.Pi + Red_Zone);
       Close_Path (Cr);
       Fill (Cr);
       Restore (Cr);
@@ -218,28 +211,27 @@ package body Panels.Attitude is
       --  Ticks
       Set_Source_Rgb (Cr, 1.0, 1.0, 1.0);
       Save (Cr);
-      Translate (Cr, center_x, center_y);
-      Round_Tick (Cr, 4, radius + tick_size);
-      Round_Tick (Cr, 12, radius + tick_size * 0.8);
-      Round_Tick (Cr, 36, radius + tick_size * 0.6);
-      Round_Tick (Cr, 72, radius + tick_size * 0.4);
+      Translate (Cr, Center_X, Center_Y);
+      Round_Tick (Cr, 4, Radius + Tick_Size);
+      Round_Tick (Cr, 12, Radius + Tick_Size * 0.8);
+      Round_Tick (Cr, 36, Radius + Tick_Size * 0.6);
+      Round_Tick (Cr, 72, Radius + Tick_Size * 0.4);
       Restore (Cr);
-
 
       --  Roll rate (top)
       Save (Cr);
-      Translate (Cr, center_x - Size / 4.0, center_y - Size / 2.2);
+      Translate (Cr, Center_X - Size / 4.0, Center_Y - Size / 2.2);
       Rate_Panel (Cr, Rate_Gauge_Size, Rate_Roll);
       Restore (Cr);
       --  Pitch rate (right)
       Save (Cr);
-      Translate (Cr, center_x + Size / 2.2, center_y - Size / 4.0);
+      Translate (Cr, Center_X + Size / 2.2, Center_Y - Size / 4.0);
       Rotate (Cr, Ada.Numerics.Pi / 2.0);
       Rate_Panel (Cr, Rate_Gauge_Size, Rate_Pitch);
       Restore (Cr);
       --  Yaw rate (bottom)
       Save (Cr);
-      Translate (Cr, center_x + Size / 4.0, center_y + Size / 2.2);
+      Translate (Cr, Center_X + Size / 4.0, Center_Y + Size / 2.2);
       Rotate (Cr, Ada.Numerics.Pi);
       Rate_Panel (Cr, Rate_Gauge_Size, Rate_Yaw);
       Restore (Cr);
@@ -247,7 +239,7 @@ package body Panels.Attitude is
       Save (Cr);
       Translate (Cr, Center_X, Center_Y);
       Rotate (Cr, Gdouble (Pitch));
-      Draw_Ball (Cr, radius);
+      Draw_Ball (Cr, Radius);
       Restore (Cr);
 
       --  center cross

@@ -19,26 +19,17 @@
 --                                                                           --
 -------------------------------------------------------------------------------
 
-with Interfaces.C.Strings; use Interfaces.C.Strings;
-with Cairo.Image_Surface; use Cairo.Image_Surface;
-with Ada.Text_IO; use Ada.Text_IO;
-with Lander; use Lander;
 with Ada.Numerics;
 with Ada.Numerics.Float_Random; use Ada.Numerics.Float_Random;
-with Pango.Layout; use Pango.Layout;
-with Pango.Font; use Pango.Font;
-with Pango.Cairo; use Pango.Cairo;
-with Pango.Context; use Pango.Context;
-with System; use System;
-with Glib.Object;
-with Pango; use Pango;
-with Pango.Enums; use Pango.Enums;
 with Text_Utils; use Text_Utils;
-
+with Lander; use Lander;
 
 package body Panels is
 
    G : Ada.Numerics.Float_Random.Generator;
+
+   function In_Panel (P : Panel; Evt : Vector2D) return Boolean;
+   --  Check if a given point is inside the panel
 
    function In_Panel (P : Panel; Evt : Vector2D) return Boolean is
    begin
@@ -68,6 +59,7 @@ package body Panels is
    end On_Resize;
 
    procedure On_Released (P : in out Panel; Evt : Vector2D) is
+      pragma Unreferenced (Evt);
    begin
       P.Clicked := False;
       P.Resized := False;
@@ -103,6 +95,8 @@ package body Panels is
       Line_Widht  : constant Gdouble := 4.0;
       Line_Margin : constant Gdouble := Line_Widht * 1.2;
       Real_Size   : constant Vector2D := Self.Size * Self.Scale;
+
+      procedure Draw_Screw (Angle : Gdouble; Pos : Vector2D);
 
       procedure Draw_Screw (Angle : Gdouble; Pos : Vector2D) is
       begin
@@ -142,7 +136,7 @@ package body Panels is
       Save (Cr);
       Translate (Cr, Self.Pos.X, Self.Pos.Y);
 
-      -- Draw a rectagle wiht round edges
+      --  Draw a rectagle wiht round edges
 
       Set_Background_Color (Cr);
       Rectangle (Cr, Line_Widht / 2.0, Line_Widht / 2.0,
@@ -169,8 +163,10 @@ package body Panels is
       Draw_Screw (Self.Screws_Angle (2),
                   (Real_Size.X - Line_Widht * 1.5,
                   Real_Size.Y - Line_Widht * 1.5));
-      Draw_Screw (Self.Screws_Angle (1), (Line_Widht * 1.5,  Real_Size.Y - Line_Widht * 1.5));
-      Draw_Screw (Self.Screws_Angle (2), (Real_Size.X - Line_Widht * 1.5, Line_Widht * 1.5));
+      Draw_Screw (Self.Screws_Angle (1),
+                  (Line_Widht * 1.5,  Real_Size.Y - Line_Widht * 1.5));
+      Draw_Screw (Self.Screws_Angle (2),
+                  (Real_Size.X - Line_Widht * 1.5, Line_Widht * 1.5));
       Restore (Cr);
    end Draw_Frame;
 
@@ -217,8 +213,7 @@ package body Panels is
       Translate (Cr, Self.Inner_Frame_Pos.X, Self.Inner_Frame_Pos.Y);
       Scale (Cr, Self.Scale, Self.Scale);
 
-
-      -- static Background
+      --  Static Background
 
       --  Black Background
       Set_Source_Rgb (Cr, 0.0, 0.0, 0.0);
@@ -440,7 +435,6 @@ package body Panels is
       Move_To (Cr, Margin_Large, Margin_Small + Scaled_Value.Y);
       Line_To (Cr, Margin_Large + Screen_Size, Margin_Small + Scaled_Value.Y);
       Stroke (Cr);
-
 
       --  Draw safe landing margins
       Set_Source_Rgba (Cr, 1.0, 0.0, 0.0, 0.35);
