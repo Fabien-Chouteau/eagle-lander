@@ -51,6 +51,7 @@ with Ada.Text_IO; use Ada.Text_IO;
 with Gtkada.MDI; use Gtkada.MDI;
 with Ada.Containers.Doubly_Linked_Lists;
 with Cairo.Png; use Cairo.Png;
+with Cairo.Surface;
 with System.Dim.Mks; use System.Dim.Mks;
 with Physics; use Physics;
 with Glib; use Glib;
@@ -87,7 +88,7 @@ package body GUI is
 
    Zoom : Gdouble := 10.0;
 
-   Insigna_Surface : Cairo_Surface := Null_Surface;
+   Insignia_Surface : Cairo_Surface := Null_Surface;
 
    package Gdouble_Functions is new
      Ada.Numerics.Generic_Elementary_Functions (Gdouble);
@@ -138,7 +139,7 @@ package body GUI is
         (Gdouble (Darea.Get_Allocated_Width) / 2.0,
          Gdouble (Darea.Get_Allocated_Height) - Pos.Y);
 
-      Insigna_Size : constant Vector2D := (700.0, 700.0);
+      Insignia_Size : constant Vector2D := (700.0, 700.0);
       Layout : Pango_Layout;
       Ink_Rect    : Pango_Rectangle;
       Logical_Rect : Pango_Rectangle;
@@ -147,24 +148,29 @@ package body GUI is
 
       --  Draw insigna
       if Situ.Result = Sucess then
-         if Insigna_Surface = Null_Surface then
-            Insigna_Surface :=
+         if Insignia_Surface = Null_Surface then
+            Insignia_Surface :=
               Create_From_Png ("ressources/Apollo11.png");
          end if;
-         Save (Cr);
 
-         --  Fit insigna to screen
-         Scale := Gdouble (Darea.Get_Allocated_Width) / Insigna_Size.X;
+         --  If the image is available
+         if Cairo.Surface.Status (Insignia_Surface) = Cairo_Status_Success then
 
-         --  Take a third of that
-         Scale := Scale / 3.0;
-         Cairo.Translate (Cr => Cr,
-                          Tx => Insigna_Pos.X - Insigna_Size.X / 2.0 * Scale,
-                          Ty => Insigna_Pos.Y - Insigna_Size.Y / 2.0 * Scale);
-         Cairo.Scale (Cr, Scale, Scale);
-         Set_Source_Surface (Cr, Insigna_Surface, 0.0, 0.0);
-         Paint (Cr);
-         Restore (Cr);
+            Save (Cr);
+
+            --  Fit insigna to screen
+            Scale := Gdouble (Darea.Get_Allocated_Width) / Insignia_Size.X;
+
+            --  Take a third of that
+            Scale := Scale / 3.0;
+            Cairo.Translate (Cr,
+                             Insigna_Pos.X - Insignia_Size.X / 2.0 * Scale,
+                             Insigna_Pos.Y - Insignia_Size.Y / 2.0 * Scale);
+            Cairo.Scale (Cr, Scale, Scale);
+            Set_Source_Surface (Cr, Insignia_Surface, 0.0, 0.0);
+            Paint (Cr);
+            Restore (Cr);
+         end if;
       end if;
 
       Layout := LM_Font (Cr, 50.0);
