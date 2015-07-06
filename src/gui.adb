@@ -142,7 +142,7 @@ package body GUI is
         (Gdouble (Darea.Get_Allocated_Width) / 2.0,
          Gdouble (Darea.Get_Allocated_Height) - Pos.Y);
 
-      Insignia_Size : constant Vector2D := (700.0, 700.0);
+      Insignia_Size : constant Gdouble := 700.0;
       Layout : Pango_Layout;
       Ink_Rect    : Pango_Rectangle;
       Logical_Rect : Pango_Rectangle;
@@ -162,13 +162,13 @@ package body GUI is
             Save (Cr);
 
             --  Fit insigna to screen
-            Scale := Gdouble (Darea.Get_Allocated_Width) / Insignia_Size.X;
+            Scale := Gdouble (Darea.Get_Allocated_Height) / Insignia_Size;
 
             --  Take a third of that
             Scale := Scale / 3.0;
             Cairo.Translate (Cr,
-                             Insigna_Pos.X - Insignia_Size.X / 2.0 * Scale,
-                             Insigna_Pos.Y - Insignia_Size.Y / 2.0 * Scale);
+                             Insigna_Pos.X - Insignia_Size / 2.0 * Scale,
+                             Insigna_Pos.Y - Insignia_Size / 2.0 * Scale);
             Cairo.Scale (Cr, Scale, Scale);
             Set_Source_Surface (Cr, Insignia_Surface, 0.0, 0.0);
             Paint (Cr);
