@@ -19,7 +19,6 @@
 --                                                                           --
 -------------------------------------------------------------------------------
 
-with Cairo; use Cairo;
 with Glib; use Glib;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Numerics;
@@ -51,8 +50,7 @@ package Lander is
       DPS_Propellent_Mass  : Mass  := 8_874.2 * kg;
    end record;
 
-   procedure Draw_Forecast_And_Speed_Vect (Cr : Cairo_Context; Step : Time;
-                                           Iteration : Positive);
+   procedure Lander_Phys_Step (Elapsed : Time; Situ : in out Lander_Situation);
    procedure Phys_Step (Elapsed : Time);
    procedure Reset;
 

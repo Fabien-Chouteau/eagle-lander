@@ -23,7 +23,7 @@ with Ada.Numerics;
 with Ada.Numerics.Float_Random; use Ada.Numerics.Float_Random;
 with Glib; use Glib;
 with Geom; use Geom;
-with System.Dim.Mks; use System.Dim.Mks;
+with Physics; use Physics;
 
 package body LEM_Drawing is
    procedure Antena (Cr : Cairo_Context);
@@ -587,6 +587,64 @@ package body LEM_Drawing is
       end if;
       Restore (Cr);
    end Draw;
+
+   ----------------------------------
+   -- Draw_Forecast_And_Speed_Vect --
+   ----------------------------------
+
+   procedure Draw_Forecast_And_Speed_Vect
+     (Cr        : Cairo_Context;
+      Situ      : Lander_Situation;
+      Step      : Time;
+      Iteration : Positive)
+   is
+
+      F_Situ : Lander_Situation := Situ;
+
+      --  Lander direction
+      L_Vect_1 : constant Position :=
+        F_Situ.Pos + Rotate ((0.0 * m, 20.0 * m), F_Situ.Pitch);
+      L_Vect_2 : constant Position :=
+        F_Situ.Pos + Rotate ((0.0 * m, -20.0 * m), F_Situ.Pitch);
+
+      --  Lander speed vector direction
+      V_Angle  : Angle;
+      V_Vect_1, V_Vect_2 : Position;
+   begin
+      Save (Cr);
+
+      Set_Line_Width (Cr, 0.2);
+      Set_Source_Rgba (Cr, 1.0, 0.0, 0.0, 0.5);
+      Move_To (Cr, Gdouble (L_Vect_1.X), Gdouble (L_Vect_1.Y));
+      Line_To (Cr, Gdouble (L_Vect_2.X), Gdouble (L_Vect_2.Y));
+      Stroke (Cr);
+
+      if F_Situ.Vel /= (Speed (0.0), Speed (0.0)) then
+         --  Lander speed vector direction
+         V_Angle :=
+           Angle_Of_Vect ((Gdouble (F_Situ.Vel.X), Gdouble (F_Situ.Vel.Y)));
+         V_Vect_1 := F_Situ.Pos;
+         V_Vect_2 := F_Situ.Pos + Rotate ((20.0 * m, 0.0 * m), V_Angle);
+
+         Set_Source_Rgba (Cr, 0.0, 1.0, 0.0, 0.5);
+         Move_To (Cr, Gdouble (V_Vect_1.X), Gdouble (V_Vect_1.Y));
+         Line_To (Cr, Gdouble (V_Vect_2.X), Gdouble (V_Vect_2.Y));
+         Stroke (Cr);
+      end if;
+
+      Set_Source_Rgba (Cr, 0.0, 0.0, 1.0, 0.5);
+      Set_Line_Cap (Cr, Cairo_Line_Cap_Round);
+      Set_Line_Width (Cr, 2.0);
+
+      for N in 1 .. Iteration loop
+         Lander_Phys_Step (Step, F_Situ);
+         Move_To (Cr, Gdouble (F_Situ.Pos.X), Gdouble (F_Situ.Pos.Y));
+         Line_To (Cr, Gdouble (F_Situ.Pos.X), Gdouble (F_Situ.Pos.Y));
+         Stroke (Cr);
+
+      end loop;
+      Restore (Cr);
+   end Draw_Forecast_And_Speed_Vect;
 
 begin
    Reset (G, 42);

@@ -28,7 +28,6 @@ package body Lander is
    package Float_IO is new Ada.Text_IO.Float_IO (Gdouble);
 
    procedure Check_Ending;
-   procedure Lander_Phys_Step (Elapsed : Time; Situ : in out Lander_Situation);
    function Total_Mass (Situ : Lander_Situation) return Mass;
    function Weight (Situ : Lander_Situation) return Force_Vect;
    function Pitch_Moment_Of_Inertia (Situ : Lander_Situation)
@@ -163,60 +162,6 @@ package body Lander is
          Check_Ending;
       end if;
    end Phys_Step;
-
-   ----------------------------------
-   -- Draw_Forecast_And_Speed_Vect --
-   ----------------------------------
-
-   procedure Draw_Forecast_And_Speed_Vect (Cr : Cairo_Context; Step : Time;
-                                           Iteration : Positive) is
-
-      F_Situ : Lander_Situation := Lander_Situ;
-
-      --  Lander direction
-      L_Vect_1 : constant Position :=
-        F_Situ.Pos + Rotate ((0.0 * m, 20.0 * m), F_Situ.Pitch);
-      L_Vect_2 : constant Position :=
-        F_Situ.Pos + Rotate ((0.0 * m, -20.0 * m), F_Situ.Pitch);
-
-      --  Lander speed vector direction
-      V_Angle  : Angle;
-      V_Vect_1, V_Vect_2 : Position;
-   begin
-      Save (Cr);
-
-      Set_Line_Width (Cr, 0.2);
-      Set_Source_Rgba (Cr, 1.0, 0.0, 0.0, 0.5);
-      Move_To (Cr, Gdouble (L_Vect_1.X), Gdouble (L_Vect_1.Y));
-      Line_To (Cr, Gdouble (L_Vect_2.X), Gdouble (L_Vect_2.Y));
-      Stroke (Cr);
-
-      if F_Situ.Vel /= (Speed (0.0), Speed (0.0)) then
-         --  Lander speed vector direction
-         V_Angle :=
-           Angle_Of_Vect ((Gdouble (F_Situ.Vel.X), Gdouble (F_Situ.Vel.Y)));
-         V_Vect_1 := F_Situ.Pos;
-         V_Vect_2 := F_Situ.Pos + Rotate ((20.0 * m, 0.0 * m), V_Angle);
-
-         Set_Source_Rgba (Cr, 0.0, 1.0, 0.0, 0.5);
-         Move_To (Cr, Gdouble (V_Vect_1.X), Gdouble (V_Vect_1.Y));
-         Line_To (Cr, Gdouble (V_Vect_2.X), Gdouble (V_Vect_2.Y));
-         Stroke (Cr);
-      end if;
-
-      Set_Source_Rgba (Cr, 0.0, 0.0, 1.0, 0.5);
-      Set_Line_Cap (Cr, Cairo_Line_Cap_Round);
-      Set_Line_Width (Cr, 2.0);
-
-      for N in 1 .. Iteration loop
-         Lander_Phys_Step (Step, F_Situ);
-         Move_To (Cr, Gdouble (F_Situ.Pos.X), Gdouble (F_Situ.Pos.Y));
-         Line_To (Cr, Gdouble (F_Situ.Pos.X), Gdouble (F_Situ.Pos.Y));
-         Stroke (Cr);
-
-      end loop;
-      Restore (Cr);
-   end Draw_Forecast_And_Speed_Vect;
 
    -----------
    -- Reset --
@@ -401,6 +346,8 @@ package body Lander is
       then
 
          Set_Unbounded_String (Ending_Situ.Message, "");
+
+         --  Check safe landing envolope
 
          if abs Lander_Situ.Vel.X > Safe_Landing_Vel.X then
             Float_IO.Put (Str, Gdouble (Lander_Situ.Vel.X), 2, 0);

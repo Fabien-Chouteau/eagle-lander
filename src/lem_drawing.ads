@@ -21,7 +21,14 @@
 
 with Cairo; use Cairo;
 with Lander; use Lander;
+with System.Dim.Mks; use System.Dim.Mks;
 
 package LEM_Drawing is
    procedure Draw (Cr : Cairo_Context; Situ : Lander_Situation);
+   procedure Draw_Forecast_And_Speed_Vect
+     (Cr        : Cairo_Context;
+      Situ      : Lander_Situation;
+      Step      : Time;
+      Iteration : Positive);
+
 end LEM_Drawing;

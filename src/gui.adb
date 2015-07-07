@@ -253,7 +253,8 @@ package body GUI is
 
       Background.Draw (Cr);
       if Help.Get_Active and then not Lander.Are_We_Done_Yet then
-         Lander.Draw_Forecast_And_Speed_Vect (Cr, 0.5 * s, 50);
+         LEM_Drawing.Draw_Forecast_And_Speed_Vect
+           (Cr, Lander.Get_Situation, 0.5 * s, 50);
       end if;
 
       LEM_Drawing.Draw (Cr, Lander.Get_Situation);
