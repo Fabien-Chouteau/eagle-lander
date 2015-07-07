@@ -70,7 +70,7 @@ package body Panels.Altitude is
 
       procedure Draw_Rate_Tape is
          Tick_Width : Gdouble;
-         Text_Size : constant Gdouble := Size.X * 0.08;
+         Text_Size : constant Gdouble := Size.X * 0.06;
       begin
 
          if Rate_Val < -Rate_Max then
@@ -135,7 +135,7 @@ package body Panels.Altitude is
 
       procedure Draw_Alt_Tape is
          Tick_Width : Gdouble;
-         Text_Size : constant Gdouble := Size.X * 0.08;
+         Text_Size : constant Gdouble := Size.X * 0.06;
       begin
 
          if Rate_Val < -Rate_Max then
