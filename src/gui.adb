@@ -555,6 +555,7 @@ package body GUI is
       Src_Id := Timeout_Add (1000 / Simulation_Frequency, Window_Idle'Access);
 
       Main_W.Show_All;
+      Main_W.Maximize;
 
    end Init_Gtk;
 
