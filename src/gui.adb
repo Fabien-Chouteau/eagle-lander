@@ -164,7 +164,7 @@ package body GUI is
       if Situ.Result = Sucess then
          if Insignia_Surface = Null_Surface then
             Insignia_Surface :=
-              Create_From_Png ("ressources/Apollo11.png");
+              Create_From_Png ("resources/Apollo11.png");
          end if;
 
          --  If the image is available
