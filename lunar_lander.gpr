@@ -11,8 +11,8 @@ project Lunar_Lander is
    Library_Type : Gtkada_Kind_Type := external ("LIBRARY_TYPE", "static");
 
    package Compiler is
-      for Default_Switches ("ada") use ("-gnat12", "-gnatE", "-gnatwa",
-                                        "-gnatwe", "-gnatyg");
+      for Default_Switches ("ada") use ("-gnat12", "-gnatwa", "-gnatwe",
+                                        "-gnatyg");
    end Compiler;
 
    package Builder is
