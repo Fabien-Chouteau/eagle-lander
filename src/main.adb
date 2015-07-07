@@ -32,7 +32,7 @@ with Timeline; use Timeline;
 
 procedure Main is
 
-   Glade_Filename : constant String := "station.glade";
+   Glade_Filename : constant String := "ressources/station.glade";
    Builder : Gtkada_Builder;
    Error : aliased GError;
 begin
