@@ -20,7 +20,8 @@
 -------------------------------------------------------------------------------
 
 with Cairo; use Cairo;
+with Lander; use Lander;
 
 package LEM_Drawing is
-   procedure Draw (Cr : Cairo_Context);
+   procedure Draw (Cr : Cairo_Context; Situ : Lander_Situation);
 end LEM_Drawing;

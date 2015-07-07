@@ -58,6 +58,7 @@ with Pango.Cairo; use Pango.Cairo;
 with System; use System;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Text_Utils; use Text_Utils;
+with LEM_Drawing;
 
 package body GUI is
 
@@ -255,7 +256,7 @@ package body GUI is
          Lander.Draw_Forecast_And_Speed_Vect (Cr, 0.5 * s, 50);
       end if;
 
-      Lander.Draw (Cr);
+      LEM_Drawing.Draw (Cr, Lander.Get_Situation);
 
       Cairo.Restore (Cr);
 

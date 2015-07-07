@@ -51,7 +51,6 @@ package Lander is
       DPS_Propellent_Mass  : Mass  := 8_874.2 * kg;
    end record;
 
-   procedure Draw (Cr : Cairo_Context);
    procedure Draw_Forecast_And_Speed_Vect (Cr : Cairo_Context; Step : Time;
                                            Iteration : Positive);
    procedure Phys_Step (Elapsed : Time);

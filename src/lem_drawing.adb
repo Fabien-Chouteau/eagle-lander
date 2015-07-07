@@ -20,13 +20,23 @@
 -------------------------------------------------------------------------------
 
 with Ada.Numerics;
+with Ada.Numerics.Float_Random; use Ada.Numerics.Float_Random;
 with Glib; use Glib;
+with Geom; use Geom;
+with System.Dim.Mks; use System.Dim.Mks;
 
 package body LEM_Drawing is
    procedure Antena (Cr : Cairo_Context);
    procedure DCS (Cr : Cairo_Context);
    procedure Front_Leg (Cr : Cairo_Context);
    procedure Side_Leg (Cr : Cairo_Context);
+   procedure Draw_Thrust (Cr     : Cairo_Context;
+                          Pos    : Vector2D;
+                          Width  : Gdouble;
+                          Thrust : Gdouble);
+   procedure Draw_LEM (Cr : Cairo_Context);
+
+   G : Generator;
 
    ------------
    -- Antena --
@@ -245,11 +255,11 @@ package body LEM_Drawing is
       end loop;
    end Side_Leg;
 
-   ----------
-   -- Draw --
-   ----------
+   --------------
+   -- Draw_LEM --
+   --------------
 
-   procedure Draw (Cr : Cairo_Context) is
+   procedure Draw_LEM (Cr : Cairo_Context) is
    begin
       --  center_x := width / 2.0;
       --  center_y := height / 2.0;
@@ -490,5 +500,94 @@ package body LEM_Drawing is
       Restore (Cr);
 
       Restore (Cr);
+   end Draw_LEM;
+
+   -----------------
+   -- Draw_Thrust --
+   -----------------
+
+   procedure Draw_Thrust (Cr     : Cairo_Context;
+                          Pos    : Vector2D;
+                          Width  : Gdouble;
+                          Thrust : Gdouble) is
+
+      procedure Draw_Triangle (Depth : Gdouble);
+      function Rand return Gdouble;
+
+      -------------------
+      -- Draw_Triangle --
+      -------------------
+
+      procedure Draw_Triangle (Depth : Gdouble) is
+      begin
+         Move_To (Cr, Pos.X, Pos.Y);
+         Line_To (Cr, Pos.X - Width / 2.0, Pos.Y);
+         Line_To (Cr, Pos.X, Pos.Y + Depth);
+         Line_To (Cr, Pos.X + Width / 2.0, Pos.Y);
+         Close_Path (Cr);
+         Fill (Cr);
+      end Draw_Triangle;
+
+      ----------
+      -- Rand --
+      ----------
+
+      function Rand return Gdouble is
+      begin
+         return ((Gdouble (Random (G)) - 0.5) * Thrust * 0.1);
+      end Rand;
+   begin
+      Save (Cr);
+      Set_Source_Rgb (Cr, 1.0, 0.0, 0.0);
+      Draw_Triangle (-Thrust - Rand);
+      Set_Source_Rgb (Cr, 1.0, 0.4, 0.0);
+      Draw_Triangle (-Thrust * 0.5 - Rand);
+      Restore (Cr);
+   end Draw_Thrust;
+
+   ----------
+   -- Draw --
+   ----------
+
+   procedure Draw (Cr : Cairo_Context; Situ : Lander_Situation) is
+   begin
+      Save (Cr);
+      Translate (Cr, Gdouble (Situ.Pos.X), Gdouble (Situ.Pos.Y));
+      Rotate (Cr, Gdouble (Situ.Pitch));
+      Scale (Cr, -0.03, 0.03);
+      Rotate (Cr, Ada.Numerics.Pi);
+      Rectangle (Cr, -5.0, 4.35, 10.0, 8.7);
+      Set_Line_Width (Cr, 0.1);
+      Stroke (Cr);
+
+      if Situ.DPS_Propellent_Mass > 0.0 * kg then
+         Draw_Thrust (Cr, (X => 0.0, Y => 100.0),
+                      48.0,  Gdouble (-Situ.DPS_Throttle) * 150.0);
+      end if;
+
+      Draw_LEM (Cr);
+
+      if Situ.RCS_Propellent_Mass > 0.0 * kg then
+         if Situ.Right_RCS_Throttle > 0.0 then
+            Draw_Thrust (Cr, (X => -69.0, Y => -65.5),
+                         5.0, Gdouble (Situ.Right_RCS_Throttle) * 20.0);
+         end if;
+         if Situ.Right_RCS_Throttle < 0.0 then
+            Draw_Thrust (Cr, (X => -69.0, Y => -35.0),
+                         5.0, Gdouble (Situ.Right_RCS_Throttle) * 20.0);
+         end if;
+         if Situ.Left_RCS_Throttle > 0.0 then
+            Draw_Thrust (Cr, (X => 69.0, Y => -65.5),
+                         5.0, Gdouble (Situ.Left_RCS_Throttle) * 20.0);
+         end if;
+         if Situ.Left_RCS_Throttle < 0.0 then
+            Draw_Thrust (Cr, (X => 69.0, Y => -35.0),
+                         5.0, Gdouble (Situ.Left_RCS_Throttle) * 20.0);
+         end if;
+      end if;
+      Restore (Cr);
    end Draw;
+
+begin
+   Reset (G, 42);
 end LEM_Drawing;

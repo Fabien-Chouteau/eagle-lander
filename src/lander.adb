@@ -20,16 +20,12 @@
 -------------------------------------------------------------------------------
 
 with Ada.Text_IO; use Ada.Text_IO;
-with Ada.Numerics.Float_Random; use Ada.Numerics.Float_Random;
 with Timeline;
-with LEM_Drawing;
 with Geom; use Geom;
 
 package body Lander is
 
    package Float_IO is new Ada.Text_IO.Float_IO (Gdouble);
-
-   G : Generator;
 
    procedure Check_Ending;
    procedure Lander_Phys_Step (Elapsed : Time; Situ : in out Lander_Situation);
@@ -43,11 +39,6 @@ package body Lander is
                          Fsum : in out Force_Vect;
                          Pitch_F : in out Torque;
                          Situ : in out Lander_Situation);
-   procedure Draw_Lander (Cr : Cairo_Context; Situ : Lander_Situation);
-   procedure Draw_Thrust (Cr     : Cairo_Context;
-                          Pos    : Vector2D;
-                          Width  : Gdouble;
-                          Thrust : Gdouble);
 
    ----------------
    -- Total_Mass --
@@ -172,103 +163,6 @@ package body Lander is
          Check_Ending;
       end if;
    end Phys_Step;
-
-   -----------------
-   -- Draw_Thrust --
-   -----------------
-
-   procedure Draw_Thrust (Cr     : Cairo_Context;
-                          Pos    : Vector2D;
-                          Width  : Gdouble;
-                          Thrust : Gdouble) is
-
-      procedure Draw_Triangle (Depth : Gdouble);
-      function Rand return Gdouble;
-
-      -------------------
-      -- Draw_Triangle --
-      -------------------
-
-      procedure Draw_Triangle (Depth : Gdouble) is
-      begin
-         Move_To (Cr, Pos.X, Pos.Y);
-         Line_To (Cr, Pos.X - Width / 2.0, Pos.Y);
-         Line_To (Cr, Pos.X, Pos.Y + Depth);
-         Line_To (Cr, Pos.X + Width / 2.0, Pos.Y);
-         Close_Path (Cr);
-         Fill (Cr);
-      end Draw_Triangle;
-
-      ----------
-      -- Rand --
-      ----------
-
-      function Rand return Gdouble is
-      begin
-         return ((Gdouble (Random (G)) - 0.5) * Thrust * 0.1);
-      end Rand;
-   begin
-      Save (Cr);
-      Set_Source_Rgb (Cr, 1.0, 0.0, 0.0);
-      Draw_Triangle (-Thrust - Rand);
-      Set_Source_Rgb (Cr, 1.0, 0.4, 0.0);
-      Draw_Triangle (-Thrust * 0.5 - Rand);
-      Restore (Cr);
-   end Draw_Thrust;
-
-   -----------------
-   -- Draw_Lander --
-   -----------------
-
-   procedure Draw_Lander (Cr : Cairo_Context; Situ : Lander_Situation) is
-   begin
-      Save (Cr);
-      Translate (Cr, Gdouble (Lander_Situ.Pos.X),
-                 Gdouble (Lander_Situ.Pos.Y));
-      Rotate (Cr, Gdouble (Lander_Situ.Pitch));
-      Scale (Cr, -0.03, 0.03);
-      Rotate (Cr, Ada.Numerics.Pi);
-      Rectangle (Cr, -5.0, 4.35, 10.0, 8.7);
-      Set_Line_Width (Cr, 0.1);
-      Stroke (Cr);
-
-      if Situ.DPS_Propellent_Mass > 0.0 * kg then
-         Draw_Thrust (Cr, (X => 0.0, Y => 100.0),
-                      48.0,  Gdouble (-Situ.DPS_Throttle) * 150.0);
-      end if;
-
-      LEM_Drawing.Draw (Cr);
-
-      if Situ.RCS_Propellent_Mass > 0.0 * kg then
-         if Situ.Right_RCS_Throttle > 0.0 then
-            Draw_Thrust (Cr, (X => -69.0, Y => -65.5),
-                         5.0, Gdouble (Situ.Right_RCS_Throttle) * 20.0);
-         end if;
-         if Situ.Right_RCS_Throttle < 0.0 then
-            Draw_Thrust (Cr, (X => -69.0, Y => -35.0),
-                         5.0, Gdouble (Situ.Right_RCS_Throttle) * 20.0);
-         end if;
-         if Situ.Left_RCS_Throttle > 0.0 then
-            Draw_Thrust (Cr, (X => 69.0, Y => -65.5),
-                         5.0, Gdouble (Situ.Left_RCS_Throttle) * 20.0);
-         end if;
-         if Situ.Left_RCS_Throttle < 0.0 then
-            Draw_Thrust (Cr, (X => 69.0, Y => -35.0),
-                         5.0, Gdouble (Situ.Left_RCS_Throttle) * 20.0);
-         end if;
-      end if;
-      Restore (Cr);
-
-   end Draw_Lander;
-
-   ----------
-   -- Draw --
-   ----------
-
-   procedure Draw (Cr : Cairo_Context) is
-   begin
-      Draw_Lander (Cr, Lander_Situ);
-   end Draw;
 
    ----------------------------------
    -- Draw_Forecast_And_Speed_Vect --
@@ -588,6 +482,4 @@ package body Lander is
       return Ending_Situ;
    end How_did_it_end;
 
-begin
-   Reset (G, 42);
 end Lander;
