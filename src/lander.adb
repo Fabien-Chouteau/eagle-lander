@@ -43,16 +43,33 @@ package body Lander is
                          Fsum : in out Force_Vect;
                          Pitch_F : in out Torque;
                          Situ : in out Lander_Situation);
+   procedure Draw_Lander (Cr : Cairo_Context; Situ : Lander_Situation);
+   procedure Draw_Thrust (Cr     : Cairo_Context;
+                          Pos    : Vector2D;
+                          Width  : Gdouble;
+                          Thrust : Gdouble);
+
+   ----------------
+   -- Total_Mass --
+   ----------------
 
    function Total_Mass (Situ : Lander_Situation) return Mass is
    begin
       return Dry_Mass + Situ.RCS_Propellent_Mass + Situ.DPS_Propellent_Mass;
    end Total_Mass;
 
+   ------------
+   -- Weight --
+   ------------
+
    function Weight (Situ : Lander_Situation) return Force_Vect is
    begin
       return (X => Force (0.0), Y => -(Total_Mass (Situ) * Moon_Gravity));
    end Weight;
+
+   -----------------------------
+   -- Pitch_Moment_Of_Inertia --
+   -----------------------------
 
    function Pitch_Moment_Of_Inertia (Situ : Lander_Situation)
                                      return Moment_Of_Inertia
@@ -63,6 +80,10 @@ package body Lander is
       --  Value from Apollo 14 : https://www.hq.nasa.gov/alsj/a14/a14mr-a.htm
       return Moment_Of_Inertia (12_750.0);
    end Pitch_Moment_Of_Inertia;
+
+   ----------------
+   -- RCS_Thrust --
+   ----------------
 
    procedure RCS_Thrust (Elapsed : Time;
                          Fsum    : in out Force_Vect;
@@ -91,6 +112,10 @@ package body Lander is
       end if;
    end RCS_Thrust;
 
+   ----------------
+   -- DPS_Thrust --
+   ----------------
+
    function DPS_Thrust (Elapsed : Time;
                         Situ    : in out Lander_Situation)
                         return Force_Vect
@@ -109,6 +134,10 @@ package body Lander is
          return (0.0 * N, 0.0 * N);
       end if;
    end DPS_Thrust;
+
+   ----------------------
+   -- Lander_Phys_Step --
+   ----------------------
 
    procedure Lander_Phys_Step (Elapsed : Time; Situ : in out Lander_Situation)
    is
@@ -131,6 +160,10 @@ package body Lander is
       Situ.Pitch   := Angle_Normalize (Situ.Pitch + Situ.Pitch_R * Elapsed);
    end Lander_Phys_Step;
 
+   ---------------
+   -- Phys_Step --
+   ---------------
+
    procedure Phys_Step (Elapsed : Time) is
    begin
       if not Are_We_Done_Yet then
@@ -140,11 +173,9 @@ package body Lander is
       end if;
    end Phys_Step;
 
-   procedure Draw_Lander (Cr : Cairo_Context; Situ : Lander_Situation);
-   procedure Draw_Thrust (Cr     : Cairo_Context;
-                          Pos    : Vector2D;
-                          Width  : Gdouble;
-                          Thrust : Gdouble);
+   -----------------
+   -- Draw_Thrust --
+   -----------------
 
    procedure Draw_Thrust (Cr     : Cairo_Context;
                           Pos    : Vector2D;
@@ -153,6 +184,10 @@ package body Lander is
 
       procedure Draw_Triangle (Depth : Gdouble);
       function Rand return Gdouble;
+
+      -------------------
+      -- Draw_Triangle --
+      -------------------
 
       procedure Draw_Triangle (Depth : Gdouble) is
       begin
@@ -163,6 +198,10 @@ package body Lander is
          Close_Path (Cr);
          Fill (Cr);
       end Draw_Triangle;
+
+      ----------
+      -- Rand --
+      ----------
 
       function Rand return Gdouble is
       begin
@@ -176,6 +215,10 @@ package body Lander is
       Draw_Triangle (-Thrust * 0.5 - Rand);
       Restore (Cr);
    end Draw_Thrust;
+
+   -----------------
+   -- Draw_Lander --
+   -----------------
 
    procedure Draw_Lander (Cr : Cairo_Context; Situ : Lander_Situation) is
    begin
@@ -218,10 +261,18 @@ package body Lander is
 
    end Draw_Lander;
 
+   ----------
+   -- Draw --
+   ----------
+
    procedure Draw (Cr : Cairo_Context) is
    begin
       Draw_Lander (Cr, Lander_Situ);
    end Draw;
+
+   ----------------------------------
+   -- Draw_Forecast_And_Speed_Vect --
+   ----------------------------------
 
    procedure Draw_Forecast_And_Speed_Vect (Cr : Cairo_Context; Step : Time;
                                            Iteration : Positive) is
@@ -273,6 +324,10 @@ package body Lander is
       Restore (Cr);
    end Draw_Forecast_And_Speed_Vect;
 
+   -----------
+   -- Reset --
+   -----------
+
    procedure Reset is
    begin
       Reset_Ending;
@@ -295,15 +350,27 @@ package body Lander is
       Lander_Situ.DPS_Propellent_Mass := DPS_Prop_Mass_Init / 5.0;
    end Reset;
 
+   -------------------
+   -- Get_Situation --
+   -------------------
+
    function Get_Situation return Lander_Situation is
    begin
       return Lander_Situ;
    end Get_Situation;
 
+   -------------------
+   -- Set_Situation --
+   -------------------
+
    procedure Set_Situation (Situ : Lander_Situation) is
    begin
       Lander_Situ := Situ;
    end Set_Situation;
+
+   ----------------------
+   -- Set_DPS_Throttle --
+   ----------------------
 
    procedure Set_DPS_Throttle (Throttle : Gdouble) is
    begin
@@ -321,6 +388,10 @@ package body Lander is
       end if;
    end Set_DPS_Throttle;
 
+   ---------------------------
+   -- Set_Left_RCS_Throttle --
+   ---------------------------
+
    procedure Set_Left_RCS_Throttle (Throttle : Gdouble) is
    begin
       if Throttle < 0.1 and then Throttle > -0.1 then
@@ -333,6 +404,10 @@ package body Lander is
          Lander_Situ.Left_RCS_Throttle := Dimentionless (Throttle);
       end if;
    end Set_Left_RCS_Throttle;
+
+   ----------------------------
+   -- Set_Right_RCS_Throttle --
+   ----------------------------
 
    procedure Set_Right_RCS_Throttle (Throttle : Gdouble) is
    begin
@@ -347,15 +422,27 @@ package body Lander is
       end if;
    end Set_Right_RCS_Throttle;
 
+   ------------------------------
+   -- Get_RCS_Propellent_Level --
+   ------------------------------
+
    function Get_RCS_Propellent_Level return Gdouble is
    begin
       return Gdouble (Lander_Situ.RCS_Propellent_Mass / RCS_Prop_Mass_Init);
    end Get_RCS_Propellent_Level;
 
+   ------------------------------
+   -- Get_DPS_Propellent_Level --
+   ------------------------------
+
    function Get_DPS_Propellent_Level return Gdouble is
    begin
       return Gdouble (Lander_Situ.DPS_Propellent_Mass / DPS_Prop_Mass_Init);
    end Get_DPS_Propellent_Level;
+
+   --------------------------
+   -- Get_Thrust_To_Weight --
+   --------------------------
 
    function Get_Thrust_To_Weight return Gdouble is
       Thrust : constant Force := DPS_Max_Thrust * Lander_Situ.DPS_Throttle;
@@ -366,6 +453,10 @@ package body Lander is
          return Gdouble (Thrust / Weight (Lander_Situ).Y);
       end if;
    end Get_Thrust_To_Weight;
+
+   ---------------------
+   -- Print_Situation --
+   ---------------------
 
    procedure Print_Situation is
    begin
@@ -384,6 +475,10 @@ package body Lander is
       Put_Line ("RCS_Propellent_Mass =>"
                 & Lander_Situ.RCS_Propellent_Mass'Img);
    end Print_Situation;
+
+   ------------------
+   -- Check_Ending --
+   ------------------
 
    procedure Check_Ending is
       Left_Skid  : constant Position := Lander_Situ.Pos
@@ -466,15 +561,27 @@ package body Lander is
       end if;
    end Check_Ending;
 
+   ---------------------
+   -- Are_We_Done_Yet --
+   ---------------------
+
    function Are_We_Done_Yet return Boolean is
    begin
       return Ending_Situ.Result /= Not_Done_Yet;
    end Are_We_Done_Yet;
 
+   ------------------
+   -- Reset_Ending --
+   ------------------
+
    procedure Reset_Ending is
    begin
       Ending_Situ.Result := Not_Done_Yet;
    end Reset_Ending;
+
+   --------------------
+   -- How_did_it_end --
+   --------------------
 
    function How_did_it_end return Ending_Situation is
    begin

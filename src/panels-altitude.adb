@@ -64,6 +64,10 @@ package body Panels.Altitude is
       procedure Draw_Rate_Tape;
       procedure Draw_Alt_Tape;
 
+      --------------------
+      -- Draw_Rate_Tape --
+      --------------------
+
       procedure Draw_Rate_Tape is
          Tick_Width : Gdouble;
          Text_Size : constant Gdouble := Size.X * 0.08;
@@ -124,6 +128,10 @@ package body Panels.Altitude is
          end loop;
 
       end Draw_Rate_Tape;
+
+      -------------------
+      -- Draw_Alt_Tape --
+      -------------------
 
       procedure Draw_Alt_Tape is
          Tick_Width : Gdouble;

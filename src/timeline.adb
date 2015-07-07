@@ -32,25 +32,45 @@ package body Timeline is
 
    Vect : Situation_Vecs.Vector;
 
+   ------------
+   -- Lenght --
+   ------------
+
    function Lenght return Simulation_Time is
    begin
       return Simulation_Time (Vect.Length);
    end Lenght;
+
+   -------------
+   -- Set_Now --
+   -------------
 
    procedure Set_Now (Index : Simulation_Time) is
    begin
       Vect.Set_Length (Ada.Containers.Count_Type (Index));
    end Set_Now;
 
+   -------------------
+   -- Get_Situation --
+   -------------------
+
    function Get_Situation (Index : Simulation_Time) return Lander_Situation is
    begin
       return Vect (Positive (Index));
    end Get_Situation;
 
+   -------------------
+   -- Set_Situation --
+   -------------------
+
    procedure Set_Situation (Situ : Lander_Situation) is
    begin
       Vect.Append (Situ);
    end Set_Situation;
+
+   ----------
+   -- Init --
+   ----------
 
    procedure Init
      (Self : in out Overview_Panel;
@@ -61,6 +81,10 @@ package body Timeline is
       Self.Pos  := Pos;
       Self.Size := Size;
    end Init;
+
+   ----------
+   -- Draw --
+   ----------
 
    procedure Draw (Self : in out Overview_Panel; Cr : Cairo_Context) is
       X           : constant         := -2000.0;

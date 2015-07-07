@@ -28,6 +28,10 @@ package body LEM_Drawing is
    procedure Front_Leg (Cr : Cairo_Context);
    procedure Side_Leg (Cr : Cairo_Context);
 
+   ------------
+   -- Antena --
+   ------------
+
    procedure Antena (Cr : Cairo_Context) is
    begin
       Arc (Cr, 0.0, 0.0, 15.0, 0.0, Ada.Numerics.Pi * 2.0);
@@ -39,6 +43,10 @@ package body LEM_Drawing is
       Set_Source_Rgb (Cr, 0.0, 0.0, 0.0);
       Stroke (Cr);
    end Antena;
+
+   ---------
+   -- DCS --
+   ---------
 
    procedure DCS (Cr : Cairo_Context) is
    begin
@@ -87,6 +95,10 @@ package body LEM_Drawing is
       Close_Path (Cr);
       Fill (Cr);
    end DCS;
+
+   ---------------
+   -- Front_Leg --
+   ---------------
 
    procedure Front_Leg (Cr : Cairo_Context) is
       procedure Half;
@@ -177,6 +189,10 @@ package body LEM_Drawing is
       Half;
    end Front_Leg;
 
+   --------------
+   -- Side_Leg --
+   --------------
+
    procedure Side_Leg (Cr : Cairo_Context) is
    begin
       for i in 1 .. 2 loop
@@ -228,6 +244,10 @@ package body LEM_Drawing is
          end if;
       end loop;
    end Side_Leg;
+
+   ----------
+   -- Draw --
+   ----------
 
    procedure Draw (Cr : Cairo_Context) is
    begin

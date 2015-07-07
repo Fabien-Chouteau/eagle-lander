@@ -34,6 +34,10 @@ package body Panels.Attitude is
                          Number : Positive;
                          Size : Gdouble);
 
+   ---------------
+   -- Draw_Ball --
+   ---------------
+
    procedure Draw_Ball (Cr : Cairo_Context; Radius : Gdouble) is
    begin
       Arc (Cr, 0.0, 0.0, Radius, 0.0, 2.0 * Ada.Numerics.Pi);
@@ -76,10 +80,19 @@ package body Panels.Attitude is
       Stroke (Cr);
    end Draw_Ball;
 
+   ----------------
+   -- Rate_Panel --
+   ----------------
+
    procedure Rate_Panel (Cr : Cairo_Context; Size : Gdouble;
                          Rate_Type : Rate_Panels)
    is
       procedure Tick (Number : Positive; Width, Tick_Size : Gdouble);
+
+      ----------
+      -- Tick --
+      ----------
+
       procedure Tick (Number : Positive; Width, Tick_Size : Gdouble) is
          Width_T : constant Gdouble := Width / Gdouble ((Number - 1));
       begin
@@ -112,8 +125,11 @@ package body Panels.Attitude is
                                       when Rate_Roll => Pango_Gravity_South,
                                       when Rate_Pitch => Pango_Gravity_East,
                                       when Rate_Yaw => Pango_Gravity_North));
---        Show_Text (Cr, "0");
    end Rate_Panel;
+
+   ----------------
+   -- Round_Tick --
+   ----------------
 
    procedure Round_Tick (Cr : Cairo_Context;
                          Number : Positive;
@@ -128,6 +144,10 @@ package body Panels.Attitude is
       end loop;
    end Round_Tick;
 
+   ----------
+   -- Init --
+   ----------
+
    procedure Init (Self : in out Attitude_Indicator;
                    Pos  : Vector2D;
                    Size : Gdouble) is
@@ -135,6 +155,10 @@ package body Panels.Attitude is
       Self.Pos := Pos;
       Self.Size := (Size, Size);
    end Init;
+
+   ----------
+   -- Draw --
+   ----------
 
    procedure Draw (Self       : in out Attitude_Indicator;
                    Cr         : Cairo_Context;

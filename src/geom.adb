@@ -32,20 +32,36 @@ package body Geom is
      Ada.Numerics.Generic_Elementary_Functions (Angle);
    use Angle_Functions;
 
+   -----------------
+   -- To_Vector2D --
+   -----------------
+
    function To_Vector2D (V1, V2 : Gdouble) return Vector2D is
    begin
       return (X => V1, Y => V2);
    end To_Vector2D;
+
+   -----------------
+   -- To_Vector2D --
+   -----------------
 
    function To_Vector2D (V1, V2 : Vector2D) return Vector2D is
    begin
       return (X => V2.X - V1.X, Y => V2.Y - V2.Y);
    end To_Vector2D;
 
+   ---------------
+   -- Magnitude --
+   ---------------
+
    function Magnitude (Vect : Vector2D) return Gdouble is
    begin
       return Sqrt (Vect.X**2 + Vect.Y**2);
    end Magnitude;
+
+   ---------------
+   -- Normalize --
+   ---------------
 
    function Normalize (Vect : Vector2D) return Vector2D is
       Mag : constant Gdouble := Magnitude (Vect);
@@ -57,6 +73,10 @@ package body Geom is
       end if;
    end Normalize;
 
+   ------------
+   -- Rotate --
+   ------------
+
    function Rotate (Vect : Vector2D; Angle_Rad : Angle) return Vector2D is
    begin
       return (X => Vect.X * Gdouble (Cos (Angle_Rad)) -
@@ -64,6 +84,10 @@ package body Geom is
               Y => Vect.X * Gdouble (Sin (Angle_Rad)) +
                 Vect.Y * Gdouble (Cos (Angle_Rad)));
    end Rotate;
+
+   -------------------
+   -- Angle_Of_Vect --
+   -------------------
 
    function Angle_Of_Vect (Vect : Vector2D) return Gdouble is
    begin
@@ -74,57 +98,101 @@ package body Geom is
          return 0.0;
    end Angle_Of_Vect;
 
+   -------------------
+   -- Angle_Of_Vect --
+   -------------------
+
    function Angle_Of_Vect (Vect : Vector2D) return Angle is
       Ret : constant Gdouble := Angle_Of_Vect (Vect);
    begin
       return Angle (Ret);
    end Angle_Of_Vect;
 
+   ---------
+   -- "+" --
+   ---------
+
    function "+" (A : Vector2D; B : Vector2D) return Vector2D is
    begin
       return (X => A.X + B.X, Y => A.Y + B.Y);
    end "+";
+
+   ---------
+   -- "+" --
+   ---------
 
    function "+" (A : Vector2D; B : Gdouble) return Vector2D is
    begin
       return (X => A.X + B, Y => A.Y + B);
    end "+";
 
+   ---------
+   -- "-" --
+   ---------
+
    function "-" (A : Vector2D; B : Vector2D) return Vector2D is
    begin
       return (X => A.X - B.X, Y => A.Y - B.Y);
    end "-";
+
+   ---------
+   -- "-" --
+   ---------
 
    function "-" (A : Vector2D) return Vector2D is
    begin
       return (X => -A.X, Y => -A.Y);
    end "-";
 
+   ---------
+   -- "-" --
+   ---------
+
    function "-" (A : Vector2D; B : Gdouble) return Vector2D is
    begin
       return (X => A.X - B, Y => A.Y - B);
    end "-";
+
+   ---------
+   -- "*" --
+   ---------
 
    function "*" (A : Vector2D; B : Gdouble) return Vector2D is
    begin
       return (X => A.X * B, Y => A.Y * B);
    end "*";
 
+   ---------
+   -- "*" --
+   ---------
+
    function "*" (A : Gdouble; B : Vector2D) return Vector2D is
    begin
       return (X => B.X * A, Y => B.Y * A);
    end "*";
+
+   ---------
+   -- "/" --
+   ---------
 
    function "/" (A : Vector2D; B : Gdouble) return Vector2D is
    begin
       return (X => A.X / B, Y => A.Y / B);
    end "/";
 
+   ------------------
+   -- Print_Vector --
+   ------------------
+
    procedure Print_Vector (Vector : Vector2D; Prefix : String) is
    begin
       Put_Line (Prefix & "(X => " & Vector.X'Img
                   & ", Y =>" & Vector.Y'Img & ")");
    end Print_Vector;
+
+   ---------------------
+   -- Angle_Normalize --
+   ---------------------
 
    function Angle_Normalize (A : Angle) return Angle is
       Ret : Angle := A;
@@ -138,6 +206,10 @@ package body Geom is
       end loop;
       return Ret;
    end Angle_Normalize;
+
+   ----------------
+   -- Angle_Diff --
+   ----------------
 
    function Angle_Diff (A, B : Angle) return Angle is
    begin

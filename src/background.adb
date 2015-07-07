@@ -42,6 +42,10 @@ package body Background is
    procedure Draw_Stars (Cr : Cairo_Context);
    procedure Draw_Ground (Cr : Cairo_Context);
 
+   ----------------
+   -- Draw_Stars --
+   ----------------
+
    procedure Draw_Stars (Cr : Cairo_Context) is
    begin
       Save (Cr);
@@ -56,6 +60,10 @@ package body Background is
       Restore (Cr);
    end Draw_Stars;
 
+   -----------------
+   -- Draw_Ground --
+   -----------------
+
    procedure Draw_Ground (Cr : Cairo_Context) is
    begin
       Save (Cr);
@@ -64,6 +72,10 @@ package body Background is
       Fill (Cr);
       Restore (Cr);
    end Draw_Ground;
+
+   ----------
+   -- Draw --
+   ----------
 
    procedure Draw (Cr : Cairo_Context) is
    begin

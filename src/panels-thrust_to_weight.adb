@@ -23,6 +23,10 @@ with Text_Utils; use Text_Utils;
 
 package body Panels.Thrust_To_Weight is
 
+   ----------
+   -- Init --
+   ----------
+
    procedure Init (Self : in out TW_Panel;
                    Pos  : Vector2D;
                    Size : Vector2D) is
@@ -30,6 +34,10 @@ package body Panels.Thrust_To_Weight is
       Self.Pos := Pos;
       Self.Size := Size;
    end Init;
+
+   ----------
+   -- Draw --
+   ----------
 
    procedure Draw (Self  : in out TW_Panel;
                    Cr    : Cairo_Context;

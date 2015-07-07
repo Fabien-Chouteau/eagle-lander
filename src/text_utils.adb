@@ -32,6 +32,10 @@ package body Text_Utils is
    function Create_Layout (Context : Cairo_Context)
                            return Pango_Layout;
 
+   -------------------
+   -- Create_Layout --
+   -------------------
+
    function Create_Layout (Context : Cairo_Context)
                            return Pango_Layout is
       function Internal (Context : Cairo_Context) return Address;
@@ -41,6 +45,10 @@ package body Text_Utils is
       return Pango_Layout
         (Glib.Object.Get_User_Data (Internal (Context), Stub));
    end Create_Layout;
+
+   -------------
+   -- LM_Font --
+   -------------
 
    function LM_Font
      (Cr      : Cairo_Context;
@@ -63,6 +71,10 @@ package body Text_Utils is
       return Layout;
    end LM_Font;
 
+   ------------------------
+   -- Draw_Centered_Text --
+   ------------------------
+
    procedure Draw_Centered_Text
      (Cr      : Cairo_Context;
       Text    : String;
@@ -83,6 +95,10 @@ package body Text_Utils is
       Pango.Cairo.Show_Layout  (Cr, Layout);
       Restore (Cr);
    end Draw_Centered_Text;
+
+   ---------------------
+   -- Draw_Right_Text --
+   ---------------------
 
    procedure Draw_Right_Text (Cr : Cairo_Context;
                               Text : String;

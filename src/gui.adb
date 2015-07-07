@@ -105,6 +105,17 @@ package body GUI is
 
    procedure Draw_Ending (Cr : Cairo_Context; Situ : Ending_Situation);
 
+   --  Buttons handlers --
+   procedure Pause_Toggled (Object : access Gtkada_Builder_Record'Class);
+   procedure Reset (Object : access Gtkada_Builder_Record'Class);
+   procedure DPS_Throttle_Change_Value
+     (Object : access Gtkada_Builder_Record'Class);
+   procedure RCS_Throttle_Change_Value
+     (Object : access Gtkada_Builder_Record'Class);
+   procedure Timeline_Change_Value
+     (Object : access Gtkada_Builder_Record'Class);
+   procedure Quit (Object : access Gtkada_Builder_Record'Class);
+
    function On_Button
      (Self  : access Gtk_Widget_Record'Class;
       Event : Gdk.Event.Gdk_Event_Button) return Boolean;
@@ -214,6 +225,10 @@ package body GUI is
       Restore (Cr);
    end Draw_Ending;
 
+   ------------
+   -- Redraw --
+   ------------
+
    function Redraw (Area  : access Gtk_Drawing_Area_Record'Class;
                     Cr    : Cairo_Context) return Boolean is
       pragma Unreferenced (Area);
@@ -264,17 +279,9 @@ package body GUI is
       return False;
    end Redraw;
 
-   --  Buttons handlers --
-   procedure Pause_Toggled (Object : access Gtkada_Builder_Record'Class);
-   procedure Reset (Object : access Gtkada_Builder_Record'Class);
-   procedure DPS_Throttle_Change_Value
-     (Object : access Gtkada_Builder_Record'Class);
-   procedure RCS_Throttle_Change_Value
-     (Object : access Gtkada_Builder_Record'Class);
-   procedure Timeline_Change_Value
-     (Object : access Gtkada_Builder_Record'Class);
-
-   procedure Quit (Object : access Gtkada_Builder_Record'Class);
+   -------------------
+   -- Pause_Toggled --
+   -------------------
 
    procedure Pause_Toggled (Object : access Gtkada_Builder_Record'Class) is
       pragma Unreferenced (Object);
@@ -287,11 +294,19 @@ package body GUI is
       end if;
    end Pause_Toggled;
 
+   ----------
+   -- Quit --
+   ----------
+
    procedure Quit (Object : access Gtkada_Builder_Record'Class) is
       pragma Unreferenced (Object);
    begin
       Gtk.Main.Main_Quit;
    end Quit;
+
+   -----------
+   -- Reset --
+   -----------
 
    procedure Reset (Object : access Gtkada_Builder_Record'Class) is
       pragma Unreferenced (Object);
@@ -307,6 +322,10 @@ package body GUI is
       Right_RCS_Adj.Set_Value (Gdouble (Situ.Right_RCS_Throttle) * 100.0);
    end Reset;
 
+   -------------------------------
+   -- DPS_Throttle_Change_Value --
+   -------------------------------
+
    procedure DPS_Throttle_Change_Value
      (Object : access Gtkada_Builder_Record'Class)
    is
@@ -316,6 +335,10 @@ package body GUI is
 
       DPS_Adj.Set_Value (Gdouble (Get_Situation.DPS_Throttle) * 100.0);
    end DPS_Throttle_Change_Value;
+
+   -------------------------------
+   -- RCS_Throttle_Change_Value --
+   -------------------------------
 
    procedure RCS_Throttle_Change_Value
      (Object : access Gtkada_Builder_Record'Class)
@@ -328,6 +351,10 @@ package body GUI is
       Set_Left_RCS_Throttle (Left_RCS_Adj.Get_Value / 100.0);
       Set_Right_RCS_Throttle (-Left_RCS_Adj.Get_Value / 100.0);
    end RCS_Throttle_Change_Value;
+
+   ---------------------------
+   -- Timeline_Change_Value --
+   ---------------------------
 
    procedure Timeline_Change_Value
      (Object : access Gtkada_Builder_Record'Class)
@@ -342,6 +369,10 @@ package body GUI is
       Right_RCS_Adj.Set_Value (Gdouble (Situ.Right_RCS_Throttle) * 100.0);
 
    end Timeline_Change_Value;
+
+   -------------------------
+   -- Key_Pressed_Handler --
+   -------------------------
 
    function Key_Pressed_Handler
      (Widget : access Gtk_Widget_Record'Class;
@@ -451,6 +482,10 @@ package body GUI is
       end if;
       return False;
    end On_Motion;
+
+   --------------
+   -- Init_Gtk --
+   --------------
 
    procedure Init_Gtk (Builder : Gtkada_Builder) is
       Src_Id : G_Source_Id;

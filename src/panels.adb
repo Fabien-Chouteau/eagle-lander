@@ -31,12 +31,20 @@ package body Panels is
    function In_Panel (P : Panel; Evt : Vector2D) return Boolean;
    --  Check if a given point is inside the panel
 
+   --------------
+   -- In_Panel --
+   --------------
+
    function In_Panel (P : Panel; Evt : Vector2D) return Boolean is
    begin
       return Evt.X >= P.Pos.X and then P.Pos.X + P.Size.X * P.Scale >= Evt.X
         and then
           Evt.Y >= P.Pos.Y and then P.Pos.Y + P.Size.Y * P.Scale >= Evt.Y;
    end In_Panel;
+
+   --------------
+   -- On_Click --
+   --------------
 
    function On_Click (P : in out Panel; Evt : Vector2D) return Boolean is
    begin
@@ -48,6 +56,10 @@ package body Panels is
       return False;
    end On_Click;
 
+   ---------------
+   -- On_Resize --
+   ---------------
+
    function On_Resize (P : in out Panel; Evt : Vector2D) return Boolean is
    begin
       if In_Panel (P, Evt) and then not P.Clicked then
@@ -58,12 +70,20 @@ package body Panels is
       return False;
    end On_Resize;
 
+   -----------------
+   -- On_Released --
+   -----------------
+
    procedure On_Released (P : in out Panel; Evt : Vector2D) is
       pragma Unreferenced (Evt);
    begin
       P.Clicked := False;
       P.Resized := False;
    end On_Released;
+
+   ---------------
+   -- On_Motion --
+   ---------------
 
    procedure On_Motion (P : in out Panel; Evt : Vector2D) is
       Mvt : Vector2D;
@@ -91,12 +111,20 @@ package body Panels is
       end if;
    end On_Motion;
 
+   ----------------
+   -- Draw_Frame --
+   ----------------
+
    procedure Draw_Frame (Self : in out Panel; Cr : Cairo_Context) is
       Line_Widht  : constant Gdouble := 4.0;
       Line_Margin : constant Gdouble := Line_Widht * 1.2;
       Real_Size   : constant Vector2D := Self.Size * Self.Scale;
 
       procedure Draw_Screw (Angle : Gdouble; Pos : Vector2D);
+
+      ----------------
+      -- Draw_Screw --
+      ----------------
 
       procedure Draw_Screw (Angle : Gdouble; Pos : Vector2D) is
       begin
@@ -170,12 +198,20 @@ package body Panels is
       Restore (Cr);
    end Draw_Frame;
 
+   --------------------------
+   -- Set_Background_Color --
+   --------------------------
+
    procedure Set_Background_Color (Cr : Cairo_Context) is
       Grey : constant Gdouble := 0.35;
 
    begin
       Set_Source_Rgb (Cr, Grey, Grey, Grey);
    end Set_Background_Color;
+
+   ----------
+   -- Init --
+   ----------
 
    procedure Init (Self : in out Gauge;
                    Text : String;
@@ -187,6 +223,10 @@ package body Panels is
       Self.Pos  := Pos;
       Self.Text := new String'(Text);
    end Init;
+
+   ----------
+   -- Draw --
+   ----------
 
    procedure Draw (Self  : in out Gauge;
                    Cr    : Cairo_Context;
@@ -286,6 +326,10 @@ package body Panels is
       Restore (Cr);
    end Draw;
 
+   ----------
+   -- Init --
+   ----------
+
    procedure Init (Self : in out Xpointer;
                    Pos  : Vector2D;
                    Size : Gdouble)
@@ -294,6 +338,10 @@ package body Panels is
       Self.Pos := Pos;
       Self.Size := (Size, Size);
    end Init;
+
+   ----------
+   -- Draw --
+   ----------
 
    procedure Draw (Self  : in out Xpointer;
                    Cr    : Cairo_Context;
