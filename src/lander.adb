@@ -187,6 +187,9 @@ package body Lander is
       Lander_Situ.Vel := (X => Speed (-154.229), Y => Speed (-44.196));
       Lander_Situ.Pitch := -45.0 * (Ada.Numerics.Pi / 180.0);
       Lander_Situ.DPS_Propellent_Mass := DPS_Prop_Mass_Init / 5.0;
+      Lander_Situ.Left_RCS_Throttle := 0.0;
+      Lander_Situ.Right_RCS_Throttle := 0.0;
+      Lander_Situ.DPS_Throttle := 1.0;
    end Reset;
 
    -------------------
