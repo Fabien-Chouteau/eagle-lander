@@ -1,6 +1,8 @@
 # eagle-lander
 Apollo 11 lunar lander simulator (Ada/Gtk/Cairo)
 
+To learn more about this simulator: ["The Eagle has landed"](http://blog.adacore.com/make-with-ada-the-eagle-has-landed).
+
 ## Build
 
 For this project you will need GNAT and GTKAda. You can find GPL versions at
