@@ -23,7 +23,7 @@ project Lunar_Lander is
 
    package Compiler is
       for Default_Switches ("ada") use ("-gnat12", "-gnatwa", "-gnatwe",
-                                        "-gnatyg") & Build_Switches;
+                                        "-gnatyg", "-gnaty-d") & Build_Switches;
    end Compiler;
 
    package Builder is
