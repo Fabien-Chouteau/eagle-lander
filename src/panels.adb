@@ -96,9 +96,7 @@ package body Panels is
          else
             Ratio.X := Mvt.X / P.Size.X;
             Ratio.Y := Mvt.Y / P.Size.Y;
-            if Ratio.X > Ratio.Y then
-               Ratio.Y := Ratio.X;
-            else
+            if Ratio.X <= Ratio.Y then
                Ratio.X := Ratio.Y;
             end if;
 

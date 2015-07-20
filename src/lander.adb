@@ -177,7 +177,6 @@ package body Lander is
       Lander_Situ.DPS_Throttle := 0.0;
       Lander_Situ.Left_RCS_Throttle := 0.0;
       Lander_Situ.Right_RCS_Throttle := 0.0;
-      Lander_Situ.DPS_Propellent_Mass := DPS_Prop_Mass_Init;
       Lander_Situ.RCS_Propellent_Mass := RCS_Prop_Mass_Init;
 
       --  High Gate Apollo 11
