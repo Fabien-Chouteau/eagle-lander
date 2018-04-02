@@ -7,7 +7,7 @@ project Lunar_Lander is
    for Exec_Dir use ".";
    for Main use ("main.adb");
 
-   type Gtkada_Kind_Type is ("static", "relocatable");
+   type Gtkada_Kind_Type is ("static-pic", "static", "relocatable");
    Library_Type : Gtkada_Kind_Type := external ("LIBRARY_TYPE", "static");
 
    type Build_Type is ("Debug", "Release");
