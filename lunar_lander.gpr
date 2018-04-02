@@ -1,4 +1,4 @@
-with "C:\GtkAda\lib\gnat\gtkada";
+with "gtkada";
 
 project Lunar_Lander is
 
