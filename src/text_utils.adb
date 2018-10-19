@@ -22,7 +22,7 @@
 with System; use System;
 with Glib.Object;
 with Pango.Font; use Pango.Font;
-with Pango.Cairo; use Pango.Cairo;
+with Pango.Cairo;
 
 package body Text_Utils is
 

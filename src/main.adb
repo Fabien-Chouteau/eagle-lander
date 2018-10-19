@@ -21,14 +21,13 @@
 
 with Glib; use Glib;
 with GUI; use GUI;
-with Gtk; use Gtk;
+with Gtk;
 with Gtk.Main;
 with Gtkada.Builder; use Gtkada.Builder;
 with Glib.Error; use Glib.Error;
-with Ada.Text_IO; use Ada.Text_IO;
-with Gtk.Widget; use Gtk.Widget;
+with Ada.Text_IO;
 with Lander;
-with Timeline; use Timeline;
+with Timeline;
 
 procedure Main is
 
