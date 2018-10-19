@@ -26,8 +26,6 @@ with Gtk.Handlers;
 with Gtk.Window;
 with Cairo; use Cairo;
 with Gtk.Widget; use Gtk.Widget;
-with Ada.Numerics.Generic_Elementary_Functions;
-with Ada.Numerics; use Ada.Numerics;
 with Glib.Object; use Glib.Object;
 with Gdk.Window; use Gdk.Window;
 use Gdk;
@@ -54,7 +52,7 @@ with Glib; use Glib;
 with Glib.Main; use Glib.Main;
 with Pango; use Pango;
 with Pango.Layout; use Pango.Layout;
-with Pango.Cairo; use Pango.Cairo;
+with Pango.Cairo;  -- use Pango.Cairo;
 with System; use System;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Text_Utils; use Text_Utils;
@@ -84,10 +82,6 @@ package body GUI is
    Zoom : Gdouble := 10.0;
 
    Insignia_Surface : Cairo_Surface := Null_Surface;
-
-   package Gdouble_Functions is new
-     Ada.Numerics.Generic_Elementary_Functions (Gdouble);
-   use Gdouble_Functions;
 
    package Widget_Keypress_Handlers is new Gtk.Handlers.Return_Callback
      (Gtk_Widget_Record, Boolean);
