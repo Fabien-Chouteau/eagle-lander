@@ -1,9 +1,8 @@
-solenoid_engine
 *.db
 *.ali
 *.o
 *.xml
 *.cgpr
 *.bexch
-eagle_lander*
+eagle_lander
 *.exe
