@@ -1,3 +1,5 @@
+[![Alire](https://img.shields.io/endpoint?url=https://alire.ada.dev/badges/eagle_lander.json)](https://alire.ada.dev/crates/eagle_lander.html)
+
 # eagle-lander
 Apollo 11 lunar lander simulator (Ada/Gtk/Cairo)
 
